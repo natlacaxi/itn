@@ -111,6 +111,8 @@ input{font-family:inherit;color:inherit;}
 .gate-btn:active{transform:scale(.94);}
 .gate-btn.ghost{background:rgba(255,255,255,.05);border:1px solid var(--stroke);box-shadow:none;color:var(--text-1);margin-top:.7rem;}
 .gate-btn.ghost:active{transform:scale(.965);background:rgba(255,255,255,.09);}
+.gate-btn.ghost:disabled{opacity:.45;cursor:not-allowed;}
+.gate-btn.ghost:disabled:active{transform:none;}
 .gate-error{font-size:.74rem;color:var(--danger);min-height:1.2em;margin-bottom:.5rem;font-weight:600;}
 .gate-guest-note{font-size:.68rem;color:var(--text-2);margin-top:1rem;text-align:center;line-height:1.6;}
 .gate-fw-note{font-family:var(--font-m);font-size:.6rem;color:var(--text-2);margin-top:1.6rem;text-align:center;opacity:.6;max-width:340px;line-height:1.6;}
@@ -129,13 +131,14 @@ input{font-family:inherit;color:inherit;}
 header#topbar{
   height:64px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
   padding:0 1.3rem;position:relative;z-index:20;
+  transition:height .35s var(--ease), padding .35s var(--ease), opacity .35s var(--ease);
 }
 .brand{display:flex;align-items:center;gap:.6rem;cursor:pointer;transition:transform .2s var(--ease-spring);}
 .brand:active{transform:scale(.96);}
-.brand-icon{width:34px;height:34px;border-radius:11px;background:var(--grad-primary);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px -4px rgba(109,93,252,.5);transition:transform .35s var(--ease-spring);}
+.brand-icon{width:34px;height:34px;border-radius:11px;background:var(--grad-primary);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px -4px rgba(109,93,252,.5);transition:transform .35s var(--ease-spring), width .3s var(--ease), height .3s var(--ease);}
 .brand:active .brand-icon{transform:rotate(-14deg) scale(.92);}
 .brand-icon svg{width:18px;height:18px;}
-.brand-text{font-family:var(--font-d);font-weight:800;font-size:1.05rem;letter-spacing:-.01em;}
+.brand-text{font-family:var(--font-d);font-weight:800;font-size:1.05rem;letter-spacing:-.01em;transition:font-size .3s var(--ease);}
 .brand-text span{background:var(--grad-primary);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 4s linear infinite;}
 @keyframes shimmer{0%{background-position:0% center;}100%{background-position:200% center;}}
 
@@ -143,6 +146,7 @@ header#topbar{
   font-family:var(--font-m);text-align:center;line-height:1.15;
   background:linear-gradient(135deg, rgba(109,93,252,.14), rgba(255,111,165,.10));
   border:1px solid var(--stroke);border-radius:16px;padding:.45rem 1rem;
+  transition:padding .3s var(--ease), transform .3s var(--ease);
 }
 .clock .time{font-size:1rem;font-weight:600;letter-spacing:.03em;background:var(--grad-primary);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .clock .date{font-size:.6rem;color:var(--text-2);text-transform:uppercase;letter-spacing:.12em;margin-top:.1rem;}
@@ -151,7 +155,7 @@ header#topbar{
 #notifBox{
   min-width:130px;height:40px;border-radius:14px;
   display:flex;align-items:center;padding:0 .85rem;gap:.5rem;cursor:pointer;overflow:hidden;position:relative;
-  transition:transform .2s var(--ease-spring), background .3s, box-shadow .3s;
+  transition:transform .2s var(--ease-spring), background .3s, box-shadow .3s, height .3s var(--ease), min-width .3s var(--ease);
   background:#000;border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.04), 0 8px 20px -10px rgba(0,0,0,.8);
 }
 #notifBox:active{transform:scale(.95);}
@@ -171,6 +175,7 @@ nav#mainmenu{
   border-top:1px solid var(--stroke);
   transform:translateY(100%);opacity:0;
   animation:navRise .6s .15s var(--ease-spring) forwards;
+  transition:padding .3s var(--ease);
 }
 .menu-slider{position:absolute;top:0;left:0;border-radius:16px;
   background:linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,.04)), var(--grad-primary);
@@ -203,6 +208,20 @@ nav#mainmenu::-webkit-scrollbar{display:none;}
 }
 .menu-item.nav-back{background:rgba(255,255,255,.06);color:var(--text-1);flex:0 0 auto;position:sticky;left:0;z-index:2;box-shadow:8px 0 12px -6px rgba(8,8,13,.7);}
 .menu-item.nav-back:hover{color:#fff;}
+
+/* ---------- Mode compact (site "activé" en plein écran) ---------- */
+#app.compact-ui header#topbar{height:40px;padding:0 .8rem;opacity:.55;}
+#app.compact-ui .brand-icon{width:24px;height:24px;}
+#app.compact-ui .brand-text{font-size:.75rem;}
+#app.compact-ui .clock{padding:.2rem .5rem;transform:scale(.8);}
+#app.compact-ui .clock .date{display:none;}
+#app.compact-ui #notifBox{height:28px;min-width:0;padding:0 .5rem;}
+#app.compact-ui #notifBox .msg{display:none;}
+#app.compact-ui .user-chip{padding:.3rem .5rem;font-size:.6rem;}
+#app.compact-ui nav#mainmenu{padding:.3rem .5rem calc(.3rem + env(safe-area-inset-bottom)) .5rem;opacity:.7;}
+#app.compact-ui .menu-item{padding:.4rem .65rem;font-size:.64rem;}
+#app.compact-ui .mv-toolbar{opacity:.85;}
+.mv-fs-btn.active{color:#fff;background:var(--grad-primary);}
 
 .searchwrap{flex:0 0 auto;margin:.4rem .9rem .7rem .9rem;padding:.65rem 1rem;border-radius:var(--radius-md);display:flex;align-items:center;gap:.6rem;position:relative;transition:box-shadow .3s;z-index:250;}
 .searchwrap:focus-within{box-shadow:0 0 0 3px rgba(109,93,252,.18);border-color:var(--accent-1);}
@@ -256,7 +275,7 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;padding-bottom:calc(6
 /* ---------- Module viewer ---------- */
 #moduleView{position:absolute;inset:0;display:none;flex-direction:column;opacity:0;transform:translateX(24px);transition:opacity .35s var(--ease), transform .35s var(--ease);}
 #moduleView.show{opacity:1;transform:translateX(0);}
-.mv-toolbar{flex:0 0 auto;display:flex;align-items:center;gap:.6rem;padding:.7rem 1.1rem;margin:.6rem .9rem 0 .9rem;border-radius:var(--radius-md);}
+.mv-toolbar{flex:0 0 auto;display:flex;align-items:center;gap:.6rem;padding:.7rem 1.1rem;margin:.6rem .9rem 0 .9rem;border-radius:var(--radius-md);transition:opacity .3s var(--ease);}
 .mv-nav-btn{border-radius:12px;color:var(--text-1);width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);transition:all .2s var(--ease-spring);font-size:1.1rem;}
 .mv-nav-btn:active{transform:scale(.88);}
 .mv-nav-btn:hover:not(:disabled){color:#fff;background:var(--grad-primary);}
@@ -436,14 +455,14 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;padding-bottom:calc(6
       <button class="gate-btn" id="btnSignup">Créer mon compte</button>
     </div>
 
-    <button class="gate-btn ghost" id="btnGuest">Continuer en invité (10s)</button>
-    <div class="gate-guest-note">Le mode invité donne un accès limité à 10 secondes.<br>Un compte TalcoITN est requis pour un accès complet.</div>
+    <button class="gate-btn ghost" id="btnGuest">Continuer en invité</button>
+    <div class="gate-guest-note">Le mode invité est utilisable <b>1 fois toutes les 24h</b> (par navigateur).<br>Un compte TalcoITN est requis pour un accès illimité.</div>
   </div>
 
   <div class="gate-fw-note" id="fwNote">Connexion via Firebase Authentication. Renseignez votre <code>firebaseConfig</code> dans le script pour l'activer — sinon le site fonctionne en simulation locale.</div>
 </div>
 
-<div id="guestBar">MODE INVITÉ — accès étendu <b><span id="guestCountdown">10</span>s</b> restant(es)</div>
+<div id="guestBar">MODE INVITÉ — session active</div>
 <div class="admin-toast" id="adminToast">🔒 Réservé aux administrateurs</div>
 
 <!-- ============ APP SHELL ============ -->
@@ -491,6 +510,7 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;padding-bottom:calc(6
           <button class="mv-dir-btn" id="mvDirCol" title="Découpe verticale">⬍</button>
         </div>
         <div class="mv-actions">
+          <button id="mvFullscreen" class="mv-fs-btn" title="Activer le site (réduit les barres)">⛶ Activer le site</button>
           <button id="mvSplit">⧉ Découper</button>
           <button id="mvEdit">✎ Personnaliser</button>
         </div>
@@ -523,7 +543,15 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;padding-bottom:calc(6
    TALCOITN — version iOS moderne (glassmorphism + animations)
    ===================================================================== */
 
-const firebaseConfig = { apiKey:"VOTRE_API_KEY", authDomain:"VOTRE_PROJET.firebaseapp.com", projectId:"VOTRE_PROJET" };
+const firebaseConfig = {
+  apiKey: "AIzaSyBHPIvhPl_9WqergwOuQMy2GwTFOmpEa8Y",
+  authDomain: "talcoexchange.firebaseapp.com",
+  projectId: "talcoexchange",
+  storageBucket: "talcoexchange.firebasestorage.app",
+  messagingSenderId: "1031865188092",
+  appId: "1:1031865188092:web:8292700b9aa8a73ea76179",
+  measurementId: "G-R5HVD922GM"
+};
 let fbReady=false;
 try{ if(firebaseConfig.apiKey!=="VOTRE_API_KEY"){ firebase.initializeApp(firebaseConfig); fbReady=true; } }catch(e){ console.warn("Firebase non configuré:",e); }
 
@@ -535,6 +563,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
       ? "🟢 Firebase Authentication actif — les comptes sont réels et partagés entre navigateurs."
       : "🟠 Firebase NON configuré — mode simulation locale actif. Les comptes créés ne sont valables que dans <b>ce navigateur</b>. Renseignez <code>firebaseConfig</code> dans le script pour activer de vrais comptes partagés.";
   }
+  updateGuestButtonState();
 });
 
 const Store = {
@@ -564,7 +593,25 @@ const MODULES = [
 const gate = document.getElementById('authGate');
 const appEl = document.getElementById('app');
 const gateError = document.getElementById('gateError');
-let currentUser=null, guestTimer=null;
+let currentUser=null;
+
+const GUEST_COOLDOWN_MS = 24*60*60*1000; // 1 fois par 24h
+
+function updateGuestButtonState(){
+  const btn=document.getElementById('btnGuest');
+  const note=document.querySelector('.gate-guest-note');
+  if(!btn) return;
+  const last=Store.get('talcoitn_guest_last', 0);
+  const remaining = GUEST_COOLDOWN_MS - (Date.now()-last);
+  if(remaining>0){
+    const h=Math.floor(remaining/3600000), m=Math.floor((remaining%3600000)/60000);
+    btn.disabled=true;
+    btn.textContent=`Invité disponible dans ${h}h ${m}min`;
+  } else {
+    btn.disabled=false;
+    btn.textContent='Continuer en invité';
+  }
+}
 
 function positionGateTabBg(){
   const active=document.querySelector('.gate-tab.active');
@@ -650,7 +697,18 @@ console.log(fbReady
 // Ajoutez vos adresses ici — tout le reste des comptes est en lecture seule.
 const ADMIN_EMAILS = ["admin@talco-itn.fr"];
 
-document.getElementById('btnGuest').addEventListener('click', ()=> enterApp({name:'Invité', email:null, guest:true}));
+document.getElementById('btnGuest').addEventListener('click', ()=>{
+  const last=Store.get('talcoitn_guest_last', 0);
+  const remaining = GUEST_COOLDOWN_MS - (Date.now()-last);
+  if(remaining>0){
+    const h=Math.floor(remaining/3600000), m=Math.floor((remaining%3600000)/60000);
+    gateError.textContent=`Mode invité déjà utilisé — réessayez dans ${h}h ${m}min.`;
+    updateGuestButtonState();
+    return;
+  }
+  Store.set('talcoitn_guest_last', Date.now());
+  enterApp({name:'Invité', email:null, guest:true});
+});
 
 function enterApp(user){
   user.isAdmin = !user.guest && !!user.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
@@ -663,19 +721,7 @@ function enterApp(user){
   logHistory(`Connexion (${user.guest?'invité':(user.isAdmin?'admin':'compte')})`);
 
   if(user.guest){
-    const bar=document.getElementById('guestBar');
-    bar.style.display='block';
-    let s=10; document.getElementById('guestCountdown').textContent=s;
-    guestTimer=setInterval(()=>{
-      s--; document.getElementById('guestCountdown').textContent=s;
-      if(s<=0){
-        clearInterval(guestTimer); bar.style.display='none';
-        appEl.classList.remove('show');
-        setTimeout(()=>{ appEl.style.display='none'; },300);
-        gate.style.display='flex'; requestAnimationFrame(()=>{ gate.style.opacity='1'; gate.style.transform='scale(1)'; });
-        gateError.textContent="Session invité expirée — connectez-vous ou créez un compte.";
-      }
-    },1000);
+    document.getElementById('guestBar').style.display='block';
   }
   initShell();
 }
@@ -943,6 +989,14 @@ function refreshNavButtons(){
   document.getElementById('mvFwd').disabled = navPos>=navStack.length-1;
 }
 
+/* ---------- Mode "site activé" (barres réduites) ---------- */
+document.getElementById('mvFullscreen').addEventListener('click', ()=>{
+  const on = appEl.classList.toggle('compact-ui');
+  document.getElementById('mvFullscreen').classList.toggle('active', on);
+  document.getElementById('mvFullscreen').textContent = on ? '⛶ Vue normale' : '⛶ Activer le site';
+  logHistory(on ? 'Mode plein écran activé' : 'Mode plein écran désactivé');
+});
+
 // ---------- État de découpe (persiste tant que la page/app reste ouverte,
 // se réapplique automatiquement quand on change de module) ----------
 const MAX_SPLIT = 3;
@@ -1065,6 +1119,15 @@ function execKey(modId, sub){ return 'talcoitn_content_'+modId+(sub?'_'+sub.repl
 // le site est déjà "dedans", prêt à être personnalisé plutôt que vide.
 function starterContent(modId, sub, grad, icon, name){
   const label = name + (sub ? ' — ' + sub : '');
+
+  // Module Music : charge directement le site externe hébergé sur GitHub Pages.
+  if(modId==='music'){
+    return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
+<style>*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;background:#0a0a12;}iframe{width:100%;height:100%;border:none;display:block;}</style>
+</head><body>
+<iframe src="https://natlacaxi.github.io/music" title="Music" allow="autoplay; encrypted-media"></iframe>
+</body></html>`;
+  }
 
   // Gabarit spécial pour Cloud / Galery : terrain prêt pour Cloudinary ou base64,
   // avec une petite galerie fonctionnelle déjà câblée (à éditer ci-dessous).
@@ -1190,7 +1253,7 @@ function buildExecSquare(modId, sub, grad, icon, name){
     Store.set(execKey(modId,sub), content);
   }
   const frame=document.createElement('iframe'); frame.className='exec-frame';
-  frame.setAttribute('sandbox','allow-scripts allow-forms allow-popups allow-modals');
+  frame.setAttribute('sandbox','allow-scripts allow-forms allow-popups allow-modals allow-same-origin');
   frame.srcdoc=content; square.appendChild(frame);
 
   const isAdmin = currentUser && currentUser.isAdmin;
