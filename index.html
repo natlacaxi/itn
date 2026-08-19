@@ -210,18 +210,15 @@ nav#mainmenu::-webkit-scrollbar{display:none;}
 .menu-item.nav-back:hover{color:#fff;}
 
 /* ---------- Mode compact (site "activé" en plein écran) ---------- */
-#app.compact-ui header#topbar{height:40px;padding:0 .8rem;opacity:.55;}
-#app.compact-ui .brand-icon{width:24px;height:24px;}
-#app.compact-ui .brand-text{font-size:.75rem;}
-#app.compact-ui .clock{padding:.2rem .5rem;transform:scale(.8);}
-#app.compact-ui .clock .date{display:none;}
-#app.compact-ui #notifBox{height:28px;min-width:0;padding:0 .5rem;}
-#app.compact-ui #notifBox .msg{display:none;}
-#app.compact-ui .user-chip{padding:.3rem .5rem;font-size:.6rem;}
-#app.compact-ui nav#mainmenu{padding:.3rem .5rem calc(.3rem + env(safe-area-inset-bottom)) .5rem;opacity:.7;}
-#app.compact-ui .menu-item{padding:.4rem .65rem;font-size:.64rem;}
-#app.compact-ui .mv-toolbar{opacity:.85;}
+#app.compact-ui header#topbar{display:none;}
+#app.compact-ui .searchwrap{display:none;}
+#app.compact-ui .mv-toolbar{display:none;}
 .mv-fs-btn.active{color:#fff;background:var(--grad-primary);}
+
+#exitCompactBtn{position:fixed;top:12px;right:12px;z-index:150;width:38px;height:38px;border-radius:12px;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;font-size:1.1rem;box-shadow:0 8px 20px -8px rgba(0,0,0,.6);transition:transform .2s var(--ease-spring), background .2s;}
+#exitCompactBtn:hover{background:var(--grad-primary);}
+#exitCompactBtn:active{transform:scale(.88);}
+#app.compact-ui #exitCompactBtn{display:flex;}
 
 .searchwrap{flex:0 0 auto;margin:.4rem .9rem .7rem .9rem;padding:.65rem 1rem;border-radius:var(--radius-md);display:flex;align-items:center;gap:.6rem;position:relative;transition:box-shadow .3s;z-index:250;}
 .searchwrap:focus-within{box-shadow:0 0 0 3px rgba(109,93,252,.18);border-color:var(--accent-1);}
@@ -467,6 +464,7 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;padding-bottom:calc(6
 
 <!-- ============ APP SHELL ============ -->
 <div id="app">
+  <button id="exitCompactBtn" title="Désactiver le mode plein écran">✕</button>
   <header id="topbar">
     <div class="brand" id="goHome">
       <div class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9" stroke-dasharray="4 3"/></svg></div>
@@ -659,11 +657,11 @@ document.getElementById('btnLogin').addEventListener('click', ()=>{
   if(!email||!pass){ gateError.textContent="Renseignez e-mail et mot de passe."; return; }
   if(fbReady){
     firebase.auth().signInWithEmailAndPassword(email,pass)
-      .then(cred=>enterApp({name:cred.user.email.split('@')[0], email:cred.user.email, guest:false}))
+      .then(cred=>enterApp({name:cred.user.email.split('@')[0], email:cred.user.email, guest:false, pass}))
       .catch(err=>{ gateError.textContent=fbErrorMessage(err); console.warn('Firebase login error:', err.code, err.message); });
   } else {
     const users=Store.get('talcoitn_users',{});
-    if(users[email] && users[email].pass===pass) enterApp({name:users[email].name, email, guest:false});
+    if(users[email] && users[email].pass===pass) enterApp({name:users[email].name, email, guest:false, pass});
     else gateError.textContent="Identifiants invalides — ce site tourne en mode simulation locale (aucune configuration Firebase valide détectée), le compte doit avoir été créé dans ce même navigateur.";
   }
 });
@@ -676,14 +674,14 @@ document.getElementById('btnSignup').addEventListener('click', ()=>{
   if(fbReady){
     firebase.auth().createUserWithEmailAndPassword(email,pass)
       .then(cred=>{
-        return cred.user.updateProfile({displayName:name}).then(()=>enterApp({name,email:cred.user.email,guest:false}));
+        return cred.user.updateProfile({displayName:name}).then(()=>enterApp({name,email:cred.user.email,guest:false,pass}));
       })
       .catch(err=>{ gateError.textContent=fbErrorMessage(err); console.warn('Firebase signup error:', err.code, err.message); });
   } else {
     const users=Store.get('talcoitn_users',{});
     if(users[email]){ gateError.textContent="Ce compte existe déjà."; return; }
     users[email]={name,pass}; Store.set('talcoitn_users',users);
-    enterApp({name,email,guest:false});
+    enterApp({name,email,guest:false,pass});
   }
 });
 
@@ -990,12 +988,14 @@ function refreshNavButtons(){
 }
 
 /* ---------- Mode "site activé" (barres réduites) ---------- */
-document.getElementById('mvFullscreen').addEventListener('click', ()=>{
-  const on = appEl.classList.toggle('compact-ui');
+function toggleCompactUI(force){
+  const on = typeof force==='boolean' ? appEl.classList.toggle('compact-ui', force) : appEl.classList.toggle('compact-ui');
   document.getElementById('mvFullscreen').classList.toggle('active', on);
   document.getElementById('mvFullscreen').textContent = on ? '⛶ Vue normale' : '⛶ Activer le site';
   logHistory(on ? 'Mode plein écran activé' : 'Mode plein écran désactivé');
-});
+}
+document.getElementById('mvFullscreen').addEventListener('click', ()=> toggleCompactUI());
+document.getElementById('exitCompactBtn').addEventListener('click', ()=> toggleCompactUI(false));
 
 // ---------- État de découpe (persiste tant que la page/app reste ouverte,
 // se réapplique automatiquement quand on change de module) ----------
@@ -1129,6 +1129,27 @@ function starterContent(modId, sub, grad, icon, name){
 </body></html>`;
   }
 
+  // Module Exchange : SSO automatique avec le compte TalcoITN.
+  if(modId==='exchange'){
+    if(!currentUser || currentUser.guest || !currentUser.email){
+      return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
+<style>*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;font-family:'Inter',sans-serif;background:#0a0a12;color:#f2f2f7;display:flex;align-items:center;justify-content:center;}
+.box{text-align:center;padding:2rem;max-width:340px;}
+.icon{font-size:2rem;margin-bottom:.8rem;}
+h1{font-size:1.15rem;margin-bottom:.6rem;}
+p{color:#8a8aa0;font-size:.82rem;line-height:1.6;}
+</style></head><body>
+<div class="box"><div class="icon">💬</div><h1>Exchange</h1><p>Aucun compte TalcoITN connecté — connectez-vous avec un compte (hors mode invité) pour accéder automatiquement à votre messagerie.</p></div>
+</body></html>`;
+    }
+    const exUrl = 'https://natlacaxi.github.io/message?itn_email='+encodeURIComponent(currentUser.email)+'&itn_pass='+encodeURIComponent(currentUser.pass||'')+'&itn_auto=1';
+    return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
+<style>*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;background:#0a0a12;}iframe{width:100%;height:100%;border:none;display:block;}</style>
+</head><body>
+<iframe src="${exUrl}" title="Exchange" allow="autoplay"></iframe>
+</body></html>`;
+  }
+
   // Gabarit spécial pour Cloud / Galery : terrain prêt pour Cloudinary ou base64,
   // avec une petite galerie fonctionnelle déjà câblée (à éditer ci-dessous).
   if(modId==='cloud' && sub==='Galery'){
@@ -1247,10 +1268,16 @@ function starterContent(modId, sub, grad, icon, name){
 
 function buildExecSquare(modId, sub, grad, icon, name){
   const square=document.createElement('div'); square.className='exec-square';
-  let content=Store.get(execKey(modId,sub), null);
-  if(!content){
-    content = starterContent(modId, sub, grad, icon, name || modId);
-    Store.set(execKey(modId,sub), content);
+  let content;
+  if(modId==='exchange'){
+    const saved=Store.get(execKey(modId,sub), null);
+    content = saved ? saved : starterContent(modId, sub, grad, icon, name || modId);
+  } else {
+    content=Store.get(execKey(modId,sub), null);
+    if(!content){
+      content = starterContent(modId, sub, grad, icon, name || modId);
+      Store.set(execKey(modId,sub), content);
+    }
   }
   const frame=document.createElement('iframe'); frame.className='exec-frame';
   frame.setAttribute('sandbox','allow-scripts allow-forms allow-popups allow-modals allow-same-origin');
