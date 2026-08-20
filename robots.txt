@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://natlacaxi.github.io/sitemap.xml
+Sitemap: https://natlacaxi.github.io/itn/sitemap.xml
