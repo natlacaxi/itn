@@ -2896,6 +2896,20 @@ function renderSettings(){
       <div class="set-row"><span>Utilisateur actif</span><span id="setUserLabel"></span></div>
       <div class="set-row"><span>Se déconnecter</span><button class="set-btn danger" id="setLogout">Déconnexion</button></div>
     </div>
+    ${currentUser && currentUser.isAdmin ? `
+    <div class="set-section glass">
+      <div class="set-title">👑 Comptes (admin)</div>
+      <div class="set-row" style="flex-wrap:wrap;gap:.5rem;">
+        <input type="text" id="admNewPseudo" placeholder="Pseudo du nouveau compte" style="background:rgba(0,0,0,.3);border:1px solid var(--stroke);color:var(--text-0);border-radius:10px;padding:.4rem .7rem;font-size:.75rem;flex:1;min-width:140px;">
+        <input type="password" id="admNewPass" placeholder="Mot de passe (6 car. min.)" style="background:rgba(0,0,0,.3);border:1px solid var(--stroke);color:var(--text-0);border-radius:10px;padding:.4rem .7rem;font-size:.75rem;flex:1;min-width:140px;">
+        <button class="set-btn" id="admCreateBtn">+ Ajouter à distance</button>
+      </div>
+      <div class="set-row"><span>Rechercher</span><input type="text" id="admSearch" placeholder="Filtrer par pseudo…" style="background:rgba(0,0,0,.3);border:1px solid var(--stroke);color:var(--text-0);border-radius:10px;padding:.4rem .7rem;font-size:.75rem;min-width:180px;"></div>
+      <div class="set-row" style="font-size:.65rem;color:var(--text-2);line-height:1.5;">
+        ⚠️ La suppression efface le profil Firestore (nom, accès aux conversations) mais pas la ligne Firebase Authentication elle-même — cela nécessite une Cloud Function côté serveur (SDK Admin), impossible à faire en pur client-side pour des raisons de sécurité Firebase.
+      </div>
+      <div class="set-hist" id="admUsersList" style="max-height:280px;overflow-y:auto;"></div>
+    </div>` : ''}
     <div class="set-section glass">
       <div class="set-title">Historique de personnalisation</div>
       <div class="set-row"><span>Journal local (localStorage)</span><button class="set-btn danger" id="setClearHist">Vider</button></div>
@@ -2933,8 +2947,112 @@ function renderSettings(){
   });
   document.getElementById('setLogout').addEventListener('click', ()=>{ logHistory('Déconnexion'); location.reload(); });
   document.getElementById('setClearHist').addEventListener('click', ()=>{ Store.set('talcoitn_history', []); renderHistory(); });
+  if(currentUser && currentUser.isAdmin) initAdminAccounts();
   renderHistory();
   applyServerName(serverName);
+}
+
+/* ===== ADMIN — gestion des comptes à distance =====
+   Liste/supprime/crée des comptes sur le projet Firebase partagé
+   (talcoexchange), réservé aux pseudos listés dans ADMIN_EMAILS.
+   La création utilise une INSTANCE FIREBASE SECONDAIRE : créer un compte
+   avec le SDK client connecte automatiquement la session sur ce nouveau
+   compte — sur l'app principale ça déconnecterait l'admin. En passant par
+   une 2e app Firebase nommée, la session admin sur l'app principale n'est
+   jamais touchée. */
+let admUsersCache = [];
+
+async function admLoadUsers(){
+  const list=document.getElementById('admUsersList');
+  if(!list) return;
+  if(!fbReady){ list.innerHTML='<div>Firebase non configuré — gestion des comptes indisponible en mode simulation locale.</div>'; return; }
+  list.innerHTML='<div>Chargement…</div>';
+  try{
+    const snap = await db.collection('users').orderBy('createdAt','desc').limit(200).get();
+    admUsersCache = snap.docs.map(d=>({uid:d.id, ...d.data()}));
+    admRenderUsers();
+  }catch(e){
+    list.innerHTML=`<div>Erreur de chargement : ${e.message}</div>`;
+  }
+}
+
+function admRenderUsers(){
+  const list=document.getElementById('admUsersList');
+  if(!list) return;
+  const q=(document.getElementById('admSearch')?.value||'').trim().toLowerCase();
+  const filtered = q ? admUsersCache.filter(u=>(u.username||'').toLowerCase().includes(q)) : admUsersCache;
+  if(filtered.length===0){ list.innerHTML='<div>Aucun compte trouvé.</div>'; return; }
+  list.innerHTML = filtered.map(u=>`
+    <div class="set-row" style="align-items:center;">
+      <span>${esc2(u.username||'(sans nom)')} ${u.online?'🟢':'⚫'}${u.uid && ADMIN_EMAILS.some(a=>a.split('@')[0]===((u.username||'').toLowerCase()))?' 👑':''}</span>
+      <button class="set-btn danger" data-uid="${u.uid}">🗑️ Supprimer le profil</button>
+    </div>`).join('');
+  list.querySelectorAll('button[data-uid]').forEach(btn=>{
+    btn.addEventListener('click', ()=>admDeleteUser(btn.dataset.uid));
+  });
+}
+
+function esc2(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+
+async function admDeleteUser(uid){
+  const u = admUsersCache.find(x=>x.uid===uid);
+  if(!u) return;
+  if(!confirm(`Supprimer le profil de "${u.username}" ? Il perdra son nom et l'accès à ses conversations. (Le compte Firebase Auth doit être supprimé côté console Firebase, ou via une Cloud Function.)`)) return;
+  try{
+    await db.collection('users').doc(uid).delete();
+    logHistory(`Profil supprimé (admin) : ${u.username}`);
+    admLoadUsers();
+    showToast2(`Profil "${u.username}" supprimé.`);
+  }catch(e){
+    alert('Erreur suppression : '+e.message);
+  }
+}
+
+function showToast2(msg){
+  const t=document.getElementById('toast'); if(!t) return;
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+let admSecondaryApp = null;
+async function admCreateAccount(){
+  const pseudo = document.getElementById('admNewPseudo').value.trim();
+  const pass = document.getElementById('admNewPass').value;
+  const btn = document.getElementById('admCreateBtn');
+  if(!pseudo || pass.length<6){ alert('Pseudo et mot de passe (6 car. min.) requis.'); return; }
+  if(!fbReady){ alert('Firebase non configuré.'); return; }
+  btn.textContent='…'; btn.disabled=true;
+  try{
+    // Instance secondaire pour ne pas remplacer la session admin en cours.
+    if(!admSecondaryApp){
+      admSecondaryApp = firebase.apps.find(a=>a.name==='admSecondary')
+        || firebase.initializeApp(firebaseConfig, 'admSecondary');
+    }
+    const secAuth = firebase.auth(admSecondaryApp);
+    const email = uToEmail(pseudo);
+    const cred = await secAuth.createUserWithEmailAndPassword(email, pass);
+    await cred.user.updateProfile({displayName:pseudo});
+    await db.collection('users').doc(cred.user.uid).set({
+      username:pseudo, usernameLower:pseudo.toLowerCase(),
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await secAuth.signOut(); // nettoie la session sur l'app secondaire
+    logHistory(`Compte créé à distance (admin) : ${pseudo}`);
+    document.getElementById('admNewPseudo').value='';
+    document.getElementById('admNewPass').value='';
+    admLoadUsers();
+    showToast2(`Compte "${pseudo}" créé.`);
+  }catch(e){
+    alert('Erreur création : '+fbErrorMessage(e));
+  }finally{
+    btn.textContent='+ Ajouter à distance'; btn.disabled=false;
+  }
+}
+
+function initAdminAccounts(){
+  document.getElementById('admCreateBtn').addEventListener('click', admCreateAccount);
+  document.getElementById('admSearch').addEventListener('input', admRenderUsers);
+  admLoadUsers();
 }
 
 function liveTheme(key,val){
