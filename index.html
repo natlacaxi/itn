@@ -3649,6 +3649,15 @@ function starterContent(modId, sub, grad, icon, name){
 </body></html>`;
   }
 
+  // Module Intelligence : charge directement le site externe hébergé sur Netlify.
+  if(modId==='intelligence'){
+    return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
+<style>*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;background:#0a0a12;}iframe{width:100%;height:100%;border:none;display:block;}</style>
+</head><body>
+<iframe src="https://6s9h2o98sq2v69n2aq6sb2h69f4qa96v1b65f.netlify.app/" title="Intelligence" allow="clipboard-write; microphone"></iframe>
+</body></html>`;
+  }
+
   // Module Map : charge directement le site externe hébergé sur GitHub Pages.
   if(modId==='map'){
     return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
