@@ -1913,36 +1913,36 @@ function watchOnlineStatus(uid){
 </html>
 </script>
 
-<!-- Gabarit complet de Nexus-Aegis (digicode d'entrée retiré), injecté tel quel dans la carte Cloud > Link -->
+<!-- Gabarit complet de TalcoCloud (ex Nexus-Aegis, digicode d'entrée retiré), injecté tel quel dans la carte Cloud > Link -->
 <script type="text/plain" id="nexusAppTemplate"><!DOCTYPE html>
 <html lang="fr" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nexus-Aegis</title>
+<title>TalcoCloud</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
- --bg:    #08080f;
- --s1:    #0f0f1aaa;
- --s2:    #13131fcc;
- --br:    #ffffff18;
- --br2:   #ffffff28;
- --v1:    #7c6fff;
- --v2:    #d47cff;
- --v3:    #5ee7ff;
- --v4:    #5fffc8;
- --v5:    #ff7eb3;
- --text:  #eeeeff;
- --text2: #9898c0;
- --muted: #6060a0;
- --red:   #ff6b6b;
+ --bg:    #08080d;
+ --s1:    #0e0e17aa;
+ --s2:    #15151fcc;
+ --br:    rgba(255,255,255,0.09);
+ --br2:   rgba(255,255,255,0.14);
+ --v1:    #7c5cff;
+ --v2:    #ff5fa8;
+ --v3:    #1de9d4;
+ --v4:    #1de9d4;
+ --v5:    #ff5fa8;
+ --text:  #f5f5f9;
+ --text2: #a6a6b8;
+ --muted: #67677a;
+ --red:   #ff5470;
  --shadow: #00000080;
  --glass: rgba(255,255,255,0.06);
  --glass2: rgba(255,255,255,0.10);
- --glass-border: rgba(255,255,255,0.18);
- --glass-blur: blur(24px) saturate(1.8);
+ --glass-border: rgba(255,255,255,0.09);
+ --glass-blur: blur(28px) saturate(1.6);
 }
 [data-theme="light"] {
  --bg:    #e8e8f8;
@@ -1968,7 +1968,7 @@ function watchOnlineStatus(uid){
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -2030,7 +2030,7 @@ body {
   pointer-events: none; animation: glowPulse 4s ease-in-out infinite;
 }
 .lock-brand {
-  font-family: 'Syne', sans-serif; font-size: 54px; font-weight: 800; letter-spacing: -.04em;
+  font-family: 'Sora', sans-serif; font-size: 54px; font-weight: 800; letter-spacing: -.04em;
   background: linear-gradient(135deg, var(--v1) 0%, var(--v2) 40%, var(--v3) 80%);
   background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text; animation: gradMove 5s ease infinite;
@@ -2058,7 +2058,7 @@ body {
   -webkit-backdrop-filter: blur(20px) saturate(1.5);
   border: 1px solid rgba(255,255,255,0.20);
   box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
-  color:var(--text); font-family:'Syne',sans-serif; font-size:22px; font-weight:600;
+  color:var(--text); font-family:'Sora',sans-serif; font-size:22px; font-weight:600;
   cursor:pointer; transition:all .22s cubic-bezier(.34,1.6,.64,1);
 }
 .nkey:hover {
@@ -2079,7 +2079,7 @@ body {
 }
 .app-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:12px; flex-wrap:wrap; gap:12px; }
 .app-brand {
-  font-family:'Syne',sans-serif; font-size:44px; font-weight:800; letter-spacing:-.04em;
+  font-family:'Sora',sans-serif; font-size:44px; font-weight:800; letter-spacing:-.04em;
   background:linear-gradient(135deg,var(--v1) 0%,var(--v2) 45%,var(--v3) 90%);
   background-size:300% 300%; -webkit-background-clip:text; -webkit-text-fill-color:transparent;
   background-clip:text; animation:gradMove 5s ease infinite; line-height:1;
@@ -2120,7 +2120,7 @@ body {
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid rgba(255,255,255,0.18);
   border-radius:18px;
-  color:var(--text); font-family:'Outfit',sans-serif; font-size:16px; outline:none;
+  color:var(--text); font-family:'Inter',sans-serif; font-size:16px; outline:none;
   transition: all .25s;
   box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.12);
 }
@@ -2135,7 +2135,7 @@ body {
   padding:10px 20px;
   background: linear-gradient(135deg,var(--v1),var(--v2));
   border:none; border-radius:12px; color:#fff;
-  font-family:'Outfit',sans-serif; font-size:13px; font-weight:600;
+  font-family:'Inter',sans-serif; font-size:13px; font-weight:600;
   cursor:pointer; transition:all .2s; white-space:nowrap;
   box-shadow: 0 4px 18px rgba(124,111,255,0.4);
 }
@@ -2162,7 +2162,7 @@ tbody tr:hover { background: rgba(255,255,255,0.05); }
 tbody tr:active { background: rgba(124,111,255,0.12); }
 tbody td { padding:18px 22px; vertical-align:middle; }
 .td-num { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); width:52px; letter-spacing:.05em; }
-.td-name { font-family:'Outfit',sans-serif; font-size:16px; font-weight:500; color:var(--text); letter-spacing:-.01em; }
+.td-name { font-family:'Inter',sans-serif; font-size:16px; font-weight:500; color:var(--text); letter-spacing:-.01em; }
 .td-code { width:80px; }
 .ctag { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:500; border-radius:10px; padding:4px 10px; display:inline-block; text-align:center; width:54px; border:1px solid; letter-spacing:.06em; backdrop-filter:blur(8px); }
 .c0{background:rgba(167,139,250,0.12);color:#a78bfa;border-color:rgba(167,139,250,0.3)}
@@ -2185,14 +2185,14 @@ tbody td { padding:18px 22px; vertical-align:middle; }
 [data-theme="light"] .c7{background:rgba(144,128,16,0.10);color:#908010;border-color:rgba(144,128,16,0.25)}
 [data-theme="light"] .c8{background:rgba(24,136,160,0.10);color:#1888a0;border-color:rgba(24,136,160,0.25)}
 [data-theme="light"] .c9{background:rgba(144,48,192,0.10);color:#9030c0;border-color:rgba(144,48,192,0.25)}
-.td-desc { font-family:'Outfit',sans-serif; font-size:13px; color:var(--text2); max-width:220px; }
+.td-desc { font-family:'Inter',sans-serif; font-size:13px; color:var(--text2); max-width:220px; }
 .td-desc.empty { color:var(--muted); font-style:italic; }
 .td-actions { width:160px; }
 .row-btns { display:flex; gap:8px; align-items:center; }
 .btn-open {
   padding:8px 18px;
   background: linear-gradient(135deg,var(--v1) 0%,var(--v2) 100%);
-  border:none; border-radius:20px; color:#fff; font-family:'Outfit',sans-serif;
+  border:none; border-radius:20px; color:#fff; font-family:'Inter',sans-serif;
   font-size:13px; font-weight:600; cursor:pointer;
   transition: all .2s;
   box-shadow: 0 4px 16px rgba(124,111,255,0.35);
@@ -2220,7 +2220,7 @@ tbody td { padding:18px 22px; vertical-align:middle; }
 
 /* CONVERTER */
 .section-head { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
-.section-label { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:var(--text); letter-spacing:-.02em; }
+.section-label { font-family:'Sora',sans-serif; font-size:18px; font-weight:700; color:var(--text); letter-spacing:-.02em; }
 .section-pill {
   font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--v2);
   background:rgba(212,124,255,0.12); border:1px solid rgba(212,124,255,0.3); border-radius:20px; padding:3px 12px;
@@ -2242,7 +2242,7 @@ tbody td { padding:18px 22px; vertical-align:middle; }
 }
 .conv-box textarea:focus { border-color:var(--v2); box-shadow:0 0 0 3px rgba(212,124,255,0.18), inset 0 1px 0 rgba(255,255,255,0.1); }
 .conv-actions { display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
-.cbtn { padding:11px 24px; font-family:'Outfit',sans-serif; font-size:13px; font-weight:600; border-radius:20px; cursor:pointer; transition:all .2s; }
+.cbtn { padding:11px 24px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; border-radius:20px; cursor:pointer; transition:all .2s; }
 .cbtn-enc { background:linear-gradient(135deg,var(--v1),var(--v2)); color:#fff; border:none; box-shadow:0 4px 18px rgba(124,111,255,0.4); }
 .cbtn-enc:hover { filter:brightness(1.15); box-shadow:0 6px 24px rgba(124,111,255,0.55); }
 .cbtn-dec { background:transparent; color:var(--v3); border:1.5px solid var(--v3); }
@@ -2295,7 +2295,7 @@ tbody td { padding:18px 22px; vertical-align:middle; }
   width:58px; height:58px; border-radius:50%;
   background:rgba(255,255,255,0.08); backdrop-filter:blur(16px);
   border:1px solid rgba(255,255,255,0.18);
-  color:var(--text); font-family:'Syne',sans-serif; font-size:20px; font-weight:600; cursor:pointer;
+  color:var(--text); font-family:'Sora',sans-serif; font-size:20px; font-weight:600; cursor:pointer;
   transition:all .18s;
   box-shadow: 0 4px 16px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.12);
 }
@@ -2311,14 +2311,14 @@ tbody td { padding:18px 22px; vertical-align:middle; }
 .info-left { display:flex; flex-direction:column; gap:12px; }
 .irow { display:flex; flex-direction:column; gap:3px; }
 .ilbl { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); }
-.ival { font-family:'Outfit',sans-serif; font-size:15px; font-weight:600; color:var(--text); letter-spacing:-.01em; }
+.ival { font-family:'Inter',sans-serif; font-size:15px; font-weight:600; color:var(--text); letter-spacing:-.01em; }
 .ival.dim { font-weight:400; color:var(--text2); font-size:13px; font-family:'JetBrains Mono',monospace; }
 .ival.gcyan { background:linear-gradient(135deg,var(--v3),var(--v4)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .idiv { height:1px; background:rgba(255,255,255,0.1); width:100%; }
 .info-open-btn {
   width:100%; padding:13px; margin-top:auto;
   background:linear-gradient(135deg,var(--v1),var(--v2));
-  border:none; border-radius:16px; color:#fff; font-family:'Outfit',sans-serif; font-size:14px; font-weight:600;
+  border:none; border-radius:16px; color:#fff; font-family:'Inter',sans-serif; font-size:14px; font-weight:600;
   cursor:pointer; transition:all .2s;
   box-shadow: 0 6px 24px rgba(124,111,255,0.4);
 }
@@ -2354,7 +2354,7 @@ tbody td { padding:18px 22px; vertical-align:middle; }
 [data-theme="light"] .modal-add { background:rgba(255,255,255,0.65); border-color:rgba(255,255,255,0.8); }
 .add-head { display:flex; align-items:center; justify-content:space-between; }
 .add-title {
-  font-family:'Syne',sans-serif; font-size:20px; font-weight:700; letter-spacing:-.02em;
+  font-family:'Sora',sans-serif; font-size:20px; font-weight:700; letter-spacing:-.02em;
   background:linear-gradient(135deg,var(--v1),var(--v2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
 }
 .add-fields { display:flex; flex-direction:column; gap:14px; }
@@ -2365,7 +2365,7 @@ tbody td { padding:18px 22px; vertical-align:middle; }
 .add-field input {
   background:rgba(255,255,255,0.07); backdrop-filter:blur(12px);
   border:1px solid rgba(255,255,255,0.18); border-radius:12px;
-  color:var(--text); font-family:'Outfit',sans-serif; font-size:14px;
+  color:var(--text); font-family:'Inter',sans-serif; font-size:14px;
   padding:11px 14px; outline:none; transition:all .2s; width:100%;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
 }
@@ -2409,7 +2409,7 @@ tbody td { padding:18px 22px; vertical-align:middle; }
 .add-actions { display:flex; gap:10px; flex-wrap:wrap; }
 .btn-add-do {
   flex:1; padding:13px 20px; background:linear-gradient(135deg,var(--v1),var(--v2));
-  border:none; border-radius:16px; color:#fff; font-family:'Outfit',sans-serif;
+  border:none; border-radius:16px; color:#fff; font-family:'Inter',sans-serif;
   font-size:14px; font-weight:600; cursor:pointer; transition:all .2s;
   box-shadow:0 6px 24px rgba(124,111,255,0.4);
 }
@@ -2418,7 +2418,7 @@ tbody td { padding:18px 22px; vertical-align:middle; }
   flex:1; padding:13px 20px;
   background:rgba(95,255,200,0.1); backdrop-filter:blur(12px);
   border:1.5px solid rgba(95,255,200,0.4); border-radius:16px; color:var(--v4);
-  font-family:'Outfit',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all .2s; white-space:nowrap;
+  font-family:'Inter',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all .2s; white-space:nowrap;
 }
 .btn-add-dl:hover { background:rgba(95,255,200,0.18); box-shadow:0 0 0 3px rgba(95,255,200,0.2); }
 .code-out { display:none; flex-direction:column; gap:8px; }
@@ -2557,7 +2557,7 @@ tbody td { padding:18px 22px; vertical-align:middle; }
 <div id="app" style="display:block">
   <div class="app-header">
     <div>
-      <div class="app-brand">🛰️ Nexus-Aegis</div>
+      <div class="app-brand">☁️ TalcoCloud</div>
       <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--muted);margin-top:4px;">Double-clic sur une ligne pour ouvrir le site</div>
     </div>
     <div class="app-meta"><span class="count-pill" id="countPill">— sites</span></div>
@@ -3710,7 +3710,7 @@ p{color:#8a8aa0;font-size:.82rem;padding:2rem;text-align:center;}
     return exchangeHTML;
   }
 
-  // Module Cloud — Link : gabarit complet de Nexus-Aegis injecté tel quel
+  // Module Cloud — Link : gabarit complet de TalcoCloud (ex Nexus-Aegis) injecté tel quel
   // (récupéré depuis https://natlacaxi.github.io/nexus), avec le digicode
   // d'entrée retiré — accès direct à l'app, sans code à taper.
   if(modId==='cloud' && sub==='Link'){
@@ -3719,7 +3719,7 @@ p{color:#8a8aa0;font-size:.82rem;padding:2rem;text-align:center;}
       return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
 <style>*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;font-family:'Inter',sans-serif;background:#0a0a12;color:#f2f2f7;display:flex;align-items:center;justify-content:center;}
 p{color:#8a8aa0;font-size:.82rem;padding:2rem;text-align:center;}
-</style></head><body><p>Gabarit Nexus-Aegis introuvable.</p></body></html>`;
+</style></head><body><p>Gabarit TalcoCloud introuvable.</p></body></html>`;
     }
     return tplEl.textContent.replace(/<\\\/script>/g, '<' + '/script>');
   }
