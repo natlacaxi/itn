@@ -474,14 +474,13 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;z-index:1;}
     <div class="gate-error" id="gateError"></div>
 
     <div id="tab-login">
-      <input class="gate-field" type="email" id="loginEmail" placeholder="Adresse e-mail" autocomplete="username">
+      <input class="gate-field" type="text" id="loginEmail" placeholder="Nom d'utilisateur" autocomplete="username">
       <input class="gate-field" type="password" id="loginPass" placeholder="Mot de passe" autocomplete="current-password">
       <button class="gate-btn" id="btnLogin">Se connecter</button>
     </div>
 
     <div id="tab-signup" style="display:none;">
-      <input class="gate-field" type="text" id="signupName" placeholder="Nom d'utilisateur">
-      <input class="gate-field" type="email" id="signupEmail" placeholder="Adresse e-mail" autocomplete="email">
+      <input class="gate-field" type="text" id="signupName" placeholder="Nom d'utilisateur" autocomplete="username">
       <input class="gate-field" type="password" id="signupPass" placeholder="Mot de passe (6 caractères min.)" autocomplete="new-password">
       <button class="gate-btn" id="btnSignup">Créer mon compte</button>
     </div>
@@ -490,7 +489,7 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;z-index:1;}
     <div class="gate-guest-note">Le mode invité est utilisable <b>1 fois toutes les 24h</b> (par navigateur).<br>Un compte TalcoITN est requis pour un accès illimité.</div>
   </div>
 
-  <div class="gate-fw-note" id="fwNote">Connexion via Firebase Authentication. Renseignez votre <code>firebaseConfig</code> dans le script pour l'activer — sinon le site fonctionne en simulation locale.</div>
+  <div class="gate-fw-note" id="fwNote">Connexion via Firebase Authentication (par pseudo). Renseignez votre <code>firebaseConfig</code> dans le script pour l'activer — sinon le site fonctionne en simulation locale.</div>
   <p style="font-family:var(--font-b);font-size:.68rem;color:var(--text-2);margin-top:1rem;text-align:center;max-width:360px;line-height:1.7;opacity:.75;">
     TalcoITN (Talco IT Networks, ITN) est le portail sécurisé regroupant Exchange, Cloud, Intelligence, Music, Scientis, Enseignement et Pratics en un seul accès.
   </p>
@@ -2012,14 +2011,21 @@ setupLiquidMenu(document.querySelector('.gate-tabs'), document.getElementById('g
 requestAnimationFrame(positionGateTabBg);
 window.addEventListener('resize', positionGateTabBg);
 
+// Convertit un pseudo en fausse adresse @talcoexchange.app en coulisses.
+// IMPORTANT : copié À L'IDENTIQUE de la fonction uToEmail de TalcoExchange
+// (même regex, même casse) — TalcoITN et TalcoExchange partagent le même
+// projet Firebase, donc un même pseudo doit toujours produire le même
+// e-mail interne des deux côtés pour pointer vers le même compte.
+const uToEmail = u => u.trim().toLowerCase().replace(/[^a-z0-9_.]/g,'')+'@talcoexchange.app';
+
 // Traduction des codes d'erreur Firebase les plus fréquents
 function fbErrorMessage(err){
   const map = {
-    'auth/user-not-found': "Aucun compte n'existe avec cet e-mail — vérifiez l'orthographe ou créez un compte.",
+    'auth/user-not-found': "Aucun compte n'existe avec ce pseudo — vérifiez l'orthographe ou créez un compte.",
     'auth/wrong-password': "Mot de passe incorrect.",
-    'auth/invalid-credential': "E-mail ou mot de passe incorrect.",
-    'auth/invalid-email': "Format d'e-mail invalide.",
-    'auth/email-already-in-use': "Un compte existe déjà avec cet e-mail — connectez-vous plutôt.",
+    'auth/invalid-credential': "Pseudo ou mot de passe incorrect.",
+    'auth/invalid-email': "Pseudo invalide (utilisez uniquement lettres, chiffres, points et underscores).",
+    'auth/email-already-in-use': "Ce pseudo est déjà pris — connectez-vous plutôt.",
     'auth/weak-password': "Mot de passe trop faible (6 caractères minimum).",
     'auth/operation-not-allowed': "La connexion par e-mail/mot de passe n'est pas activée dans la console Firebase (Authentication → Sign-in method → Email/Password → Activer).",
     'auth/network-request-failed': "Problème réseau — vérifiez votre connexion.",
@@ -2029,12 +2035,13 @@ function fbErrorMessage(err){
 }
 
 document.getElementById('btnLogin').addEventListener('click', ()=>{
-  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pseudo=document.getElementById('loginEmail').value.trim();
   const pass=document.getElementById('loginPass').value;
-  if(!email||!pass){ gateError.textContent="Renseignez e-mail et mot de passe."; return; }
+  if(!pseudo||!pass){ gateError.textContent="Renseignez pseudo et mot de passe."; return; }
+  const email=uToEmail(pseudo);
   if(fbReady){
     firebase.auth().signInWithEmailAndPassword(email,pass)
-      .then(cred=>enterApp({name:cred.user.email.split('@')[0], email:cred.user.email, guest:false, pass}))
+      .then(cred=>enterApp({name:pseudo, email:cred.user.email, guest:false, pass}))
       .catch(err=>{ gateError.textContent=fbErrorMessage(err); console.warn('Firebase login error:', err.code, err.message); });
   } else {
     const users=Store.get('talcoitn_users',{});
@@ -2044,21 +2051,21 @@ document.getElementById('btnLogin').addEventListener('click', ()=>{
 });
 
 document.getElementById('btnSignup').addEventListener('click', ()=>{
-  const name=document.getElementById('signupName').value.trim();
-  const email=document.getElementById('signupEmail').value.trim().toLowerCase();
+  const pseudo=document.getElementById('signupName').value.trim();
   const pass=document.getElementById('signupPass').value;
-  if(!name||!email||pass.length<6){ gateError.textContent="Nom, e-mail et mot de passe (6 car. min.) requis."; return; }
+  if(!pseudo||pass.length<6){ gateError.textContent="Pseudo et mot de passe (6 car. min.) requis."; return; }
+  const email=uToEmail(pseudo);
   if(fbReady){
     firebase.auth().createUserWithEmailAndPassword(email,pass)
       .then(cred=>{
-        return cred.user.updateProfile({displayName:name}).then(()=>enterApp({name,email:cred.user.email,guest:false,pass}));
+        return cred.user.updateProfile({displayName:pseudo}).then(()=>enterApp({name:pseudo,email:cred.user.email,guest:false,pass}));
       })
       .catch(err=>{ gateError.textContent=fbErrorMessage(err); console.warn('Firebase signup error:', err.code, err.message); });
   } else {
     const users=Store.get('talcoitn_users',{});
-    if(users[email]){ gateError.textContent="Ce compte existe déjà."; return; }
-    users[email]={name,pass}; Store.set('talcoitn_users',users);
-    enterApp({name,email,guest:false,pass});
+    if(users[email]){ gateError.textContent="Ce pseudo est déjà pris."; return; }
+    users[email]={name:pseudo,pass}; Store.set('talcoitn_users',users);
+    enterApp({name:pseudo,email,guest:false,pass});
   }
 });
 
@@ -2068,9 +2075,12 @@ console.log(fbReady
   : "[TalcoITN] Firebase NON configuré (firebaseConfig.apiKey toujours à 'VOTRE_API_KEY') — les comptes créés sont stockés en localStorage, propres à ce navigateur uniquement. C'est probablement pourquoi un compte créé ailleurs, ou avant configuration de Firebase, n'est pas reconnu."
 );
 
-// Liste des e-mails administrateurs autorisés à modifier le code des modules.
-// Ajoutez vos adresses ici — tout le reste des comptes est en lecture seule.
-const ADMIN_EMAILS = ["admin@talco-itn.fr"];
+// Liste des comptes administrateurs autorisés à modifier le code des modules.
+// Comme la connexion se fait maintenant par pseudo (converti en interne en
+// pseudo@talcoexchange.app via uToEmail), indiquez ici l'adresse générée par
+// le(s) pseudo(s) admin — pas une vraie adresse e-mail.
+// Ex. : pour le pseudo "Talco" → uToEmail("Talco") = "talco@talcoexchange.app"
+const ADMIN_EMAILS = ["talco@talcoexchange.app"];
 
 document.getElementById('btnGuest').addEventListener('click', ()=>{
   const last=Store.get('talcoitn_guest_last', 0);
