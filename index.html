@@ -2614,8 +2614,7 @@ function buildExecSquare(modId, sub, grad, icon, name){
   const square=document.createElement('div'); square.className='exec-square';
   let content;
   if(modId==='exchange'){
-    const saved=Store.get(execKey(modId,sub), null);
-    content = saved ? saved : starterContent(modId, sub, grad, icon, name || modId);
+    content = starterContent(modId, sub, grad, icon, name || modId);
   } else {
     content=Store.get(execKey(modId,sub), null);
     if(!content){
@@ -2638,8 +2637,9 @@ function buildExecSquare(modId, sub, grad, icon, name){
   return square;
 }
 
-function showAdminToast(){
+function showAdminToast(msg){
   const t=document.getElementById('adminToast');
+  t.textContent = msg || '🔒 Réservé aux administrateurs';
   t.classList.add('show');
   clearTimeout(showAdminToast._tid);
   showAdminToast._tid=setTimeout(()=>t.classList.remove('show'), 2200);
@@ -2685,6 +2685,7 @@ function setupEditor(){
 }
 function openEditor(modId, sub){
   if(!(currentUser && currentUser.isAdmin)){ showAdminToast(); return; }
+  if(modId==='exchange'){ showAdminToast('💬 Exchange est généré automatiquement (SSO) — non personnalisable ici.'); return; }
   editingMod=modId; editingSub=sub;
   document.getElementById('editorTitle').textContent='Éditer — '+modId+(sub?' / '+sub:'');
   document.getElementById('editorTextarea').value=Store.get(execKey(modId,sub),'');
