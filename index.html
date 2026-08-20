@@ -275,10 +275,10 @@ nav#mainmenu::-webkit-scrollbar{display:none;}
 .sr-item:hover{background:rgba(109,93,252,.12);color:#fff;cursor:pointer;}
 .sr-item:last-child{border-bottom:none;border-radius:0 0 var(--radius-md) var(--radius-md);}
 
-main#stage{flex:1 1 auto;position:relative;overflow:hidden;padding-bottom:calc(64px + env(safe-area-inset-bottom));z-index:1;}
+main#stage{flex:1 1 auto;position:relative;overflow:hidden;z-index:1;}
 
 /* ---------- Home grid ---------- */
-#homeView{position:absolute;inset:0;overflow:auto;padding:1.3rem 1.3rem 2.5rem 1.3rem;opacity:0;transform:translateX(-16px);transition:opacity .35s var(--ease), transform .35s var(--ease);}
+#homeView{position:absolute;top:0;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));overflow:auto;padding:1.3rem 1.3rem 2.5rem 1.3rem;opacity:0;transform:translateX(-16px);transition:opacity .35s var(--ease), transform .35s var(--ease);}
 #homeView.show{opacity:1;transform:translateX(0);}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:.9rem;max-width:1200px;margin:0 auto;}
 .card.glass{background:rgba(255,255,255,.1);}
@@ -304,7 +304,7 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;padding-bottom:calc(6
 .card:hover .glow{opacity:.45;}
 
 /* ---------- Module viewer ---------- */
-#moduleView{position:absolute;inset:0;display:none;flex-direction:column;opacity:0;transform:translateX(24px);transition:opacity .35s var(--ease), transform .35s var(--ease);}
+#moduleView{position:absolute;top:0;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));display:none;flex-direction:column;opacity:0;transform:translateX(24px);transition:opacity .35s var(--ease), transform .35s var(--ease);}
 #moduleView.show{opacity:1;transform:translateX(0);}
 .mv-toolbar{flex:0 0 auto;display:flex;align-items:center;gap:.6rem;padding:.7rem 1.1rem;margin:.6rem .9rem 0 .9rem;border-radius:var(--radius-md);transition:opacity .3s var(--ease);}
 .mv-nav-btn{border-radius:12px;color:var(--text-1);width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);transition:all .2s var(--ease-spring);font-size:1.1rem;}
@@ -381,7 +381,7 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;padding-bottom:calc(6
 .editor-foot button.ghost{background:rgba(255,255,255,.06);color:var(--text-1);}
 
 /* ---------- Settings ---------- */
-#settingsPanel{position:absolute;inset:0;overflow:auto;padding:1.3rem 1.3rem 3rem 1.3rem;display:none;opacity:0;transition:opacity .35s var(--ease);}
+#settingsPanel{position:absolute;top:0;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));overflow:auto;padding:1.3rem 1.3rem 3rem 1.3rem;display:none;opacity:0;transition:opacity .35s var(--ease);}
 #settingsPanel.show{opacity:1;}
 .set-section{max-width:640px;margin:0 auto 1.4rem auto;border-radius:var(--radius-md);padding:1.3rem 1.4rem;}
 .set-title{font-family:var(--font-d);font-weight:800;font-size:1rem;margin-bottom:.9rem;letter-spacing:-.01em;display:flex;align-items:center;gap:.5rem;}
@@ -446,7 +446,7 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;padding-bottom:calc(6
   .submenu-btn{padding:.35rem .7rem;font-size:.66rem;}
   nav#mainmenu{padding:.35rem .6rem calc(.35rem + env(safe-area-inset-bottom)) .6rem;}
   .menu-item{padding:.4rem .7rem;font-size:.66rem;}
-  main#stage{padding-bottom:calc(46px + env(safe-area-inset-bottom));}
+  #homeView,#moduleView,#settingsPanel{bottom:calc(46px + env(safe-area-inset-bottom));}
 }
 </style>
 </head>
