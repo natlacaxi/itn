@@ -167,7 +167,7 @@ header#topbar{
   padding:0 1.3rem;position:relative;z-index:20;
   transition:height .35s var(--ease), padding .35s var(--ease), opacity .35s var(--ease);
 }
-.brand{display:flex;align-items:center;gap:.6rem;cursor:pointer;transition:transform .2s var(--ease-spring);}
+.brand{display:flex;align-items:center;gap:.3rem;cursor:pointer;transition:transform .2s var(--ease-spring);}
 .brand:active{transform:scale(.96);}
 .brand-icon{width:34px;height:34px;border-radius:11px;background:var(--grad-primary);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px -4px rgba(109,93,252,.5);transition:transform .35s var(--ease-spring), width .3s var(--ease), height .3s var(--ease);}
 .brand:active .brand-icon{transform:rotate(-14deg) scale(.92);}
@@ -462,6 +462,7 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;z-index:1;}
     </div>
     <h1 class="gate-logo">TalcoITN</h1>
     <div class="gate-sub">Talco IT Networks (ITN)</div>
+    <div class="gate-sub" style="margin-top:.2rem;opacity:.6;">Version 11.4</div>
   </div>
 
   <div class="gate-card glass">
@@ -513,8 +514,8 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;z-index:1;}
   <header id="topbar">
     <div class="brand" id="goHome">
       <div class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9" stroke-dasharray="4 3"/></svg></div>
-      <div style="display:flex;flex-direction:column;line-height:1.15;text-align:center;align-items:center;">
-        <div class="brand-text">Talco<span>ITN</span></div>
+      <div style="display:flex;flex-direction:column;line-height:1.15;">
+        <div class="brand-text">Talco IT Networks</div>
         <div id="serverLabel" style="font-family:var(--font-m);font-size:.56rem;letter-spacing:.06em;color:var(--text-2);text-transform:uppercase;">Administration TalcoIT-Networks</div>
       </div>
     </div>
@@ -1958,6 +1959,7 @@ const MODULES = [
   {id:'intelligence', name:'Intelligence', desc:'IA — génération & analyse', icon:'✨', grad:'linear-gradient(135deg,#6d5dfc,#ff6fa5)', sub:null},
   {id:'scientis', name:'Scientis', desc:'Outils scientifiques', icon:'🧪', grad:'linear-gradient(135deg,#22d3c5,#6d5dfc)', sub:["Convertit'", 'Temps Vie']},
   {id:'music', name:'Music', desc:'Lecteur & playlists', icon:'🎵', grad:'linear-gradient(135deg,#ffb454,#ff6fa5)', sub:null},
+  {id:'map', name:'Map', desc:'Cartographie', icon:'🗺️', grad:'linear-gradient(135deg,#22d3c5,#4f7cff)', sub:null},
   {id:'enseignement', name:'Enseignement', desc:'Ressources pédagogiques', icon:'📚', grad:'linear-gradient(135deg,#4f7cff,#6d5dfc)', sub:['Module 1','Module 2','Module 3','Module 4','Module 5']},
   {id:'pratics', name:'Pratics', desc:'Outils du quotidien', icon:'🧭', grad:'linear-gradient(135deg,#22d3c5,#ffb454)', sub:['Module 1','Module 2','Module 3','Module 4','Module 5']},
   {id:'settings', name:'Settings', desc:'Personnalisation du site', icon:'⚙️', grad:'linear-gradient(135deg,#67677a,#a6a6b8)', sub:null},
@@ -2513,6 +2515,15 @@ function starterContent(modId, sub, grad, icon, name){
 <style>*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;background:#0a0a12;}iframe{width:100%;height:100%;border:none;display:block;}</style>
 </head><body>
 <iframe src="https://natlacaxi.github.io/music" title="Music" allow="autoplay; encrypted-media"></iframe>
+</body></html>`;
+  }
+
+  // Module Map : charge directement le site externe hébergé sur GitHub Pages.
+  if(modId==='map'){
+    return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
+<style>*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;background:#0a0a12;}iframe{width:100%;height:100%;border:none;display:block;}</style>
+</head><body>
+<iframe src="https://natlacaxi.github.io/map" title="Map" allow="geolocation"></iframe>
 </body></html>`;
   }
 
