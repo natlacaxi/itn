@@ -41,6 +41,7 @@
 }
 </script>
 
+<!-- ✏️ Favicon ITN — rond violet uni, distinct des autres modules -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c5cff'/%3E%3Cstop offset='1' stop-color='%23ff5fa8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='7' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='32' r='21' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' stroke-dasharray='9 7'/%3E%3C/svg%3E">
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -486,6 +487,8 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;z-index:1;}
     <div id="tab-signup" style="display:none;">
       <input class="gate-field" type="text" id="signupName" placeholder="Nom d'utilisateur" autocomplete="username">
       <input class="gate-field" type="password" id="signupPass" placeholder="Mot de passe (6 caractères min.)" autocomplete="new-password">
+      <input class="gate-field" type="text" id="signupAdminCode" placeholder="Code admin du jour (ex: TALC482910)" autocomplete="off" style="text-transform:uppercase;">
+      <div class="gate-sub" style="margin:-.3rem 0 .6rem 0;font-size:.62rem;opacity:.65;">Code fourni par un administrateur, requis pour créer un compte. Change chaque jour.</div>
       <button class="gate-btn" id="btnSignup">Créer mon compte</button>
     </div>
 
@@ -1148,6 +1151,7 @@ button,input,textarea{font-family:var(--font);}
         <div id="me-name">...</div>
         <div id="me-status-label" style="font-size:11px;color:var(--sub);">En ligne</div>
       </div>
+      <button class="icon-btn" id="my-profile-btn" title="Mon profil">⚙️</button>
       <button class="icon-btn" id="new-dm-btn" title="Nouveau message">✏️</button>
       <button class="icon-btn" id="logout-btn" title="Déconnexion" style="font-size:14px;">⏻</button>
     </div>
@@ -1190,7 +1194,7 @@ button,input,textarea{font-family:var(--font);}
         </div>
         <div class="ch-actions">
           <button class="icon-btn" id="delete-conv-btn" title="Supprimer la conversation">🗑️</button>
-          <button class="icon-btn" title="Profil">👤</button>
+          <button class="icon-btn" id="view-profile-btn" title="Profil">👤</button>
         </div>
       </div>
       <div id="messages"></div>
@@ -1229,6 +1233,45 @@ button,input,textarea{font-family:var(--font);}
     <div class="modal-actions">
       <button class="btn-ghost" id="group-cancel">Annuler</button>
       <button class="btn-ok" id="group-confirm">Créer le groupe →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Mon profil -->
+<div id="myprofile-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <h3>Mon profil</h3>
+    <p>Modifie tes informations personnelles</p>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:14px;">
+      <div class="av xl" id="mp-avatar-preview" style="cursor:pointer;">?</div>
+      <input type="file" id="mp-photo-input" accept="image/*" style="display:none;">
+      <button class="btn-ghost" id="mp-photo-btn" style="padding:6px 12px;font-size:11px;">Changer la photo</button>
+      <button class="btn-ghost" id="mp-photo-remove" style="padding:6px 12px;font-size:11px;">Retirer la photo</button>
+    </div>
+    <label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px;">Pseudo affiché</label>
+    <input type="text" id="mp-pseudo-input" placeholder="Pseudo affiché" autocomplete="off">
+    <label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px;">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+    <input type="password" id="mp-pass-input" placeholder="Nouveau mot de passe (6 car. min.)" autocomplete="new-password">
+    <div class="err" id="mp-error"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="mp-cancel">Annuler</button>
+      <button class="btn-ok" id="mp-confirm">Enregistrer →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Profil d'un contact (lecture seule) -->
+<div id="contact-profile-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <h3>Profil</h3>
+    <p>Informations de ce contact</p>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:8px;">
+      <div class="av xl" id="cp-avatar">?</div>
+      <div style="font-weight:800;font-size:16px;" id="cp-name">...</div>
+      <div style="font-size:12px;color:var(--sub);" id="cp-status">...</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ok" id="cp-close" style="width:100%;">Fermer</button>
     </div>
   </div>
 </div>
@@ -1309,7 +1352,7 @@ window.addEventListener('resize', setVh);
 window.addEventListener('orientationchange', setVh);
 
 /* ===== STATE ===== */
-let me = null, myName = null;
+let me = null, myName = null, myPhotoURL = null, activeOtherUid = null;
 let activeConvId = null, activeIsGroup = false;
 let unsubMsgs = null, unsubConvs = null;
 let allConvs = [];
@@ -1343,6 +1386,21 @@ function avatarColor(name){
   return `linear-gradient(135deg, hsl(${hue},72%,52%), hsl(${hue2},72%,45%))`;
 }
 function paintAvatar(el, name){ if(el) el.style.background = avatarColor(name); }
+/* Affiche une photo de profil si disponible, sinon retombe sur la couleur + initiale */
+function renderAvatarPhoto(el, name, photoURL){
+  if(!el) return;
+  if(photoURL){
+    el.style.backgroundImage=`url("${photoURL}")`;
+    el.style.backgroundSize='cover';
+    el.style.backgroundPosition='center';
+    el.style.background=el.style.backgroundImage+', '+avatarColor(name);
+    if(el.childNodes[0] && el.childNodes[0].nodeType===3) el.childNodes[0].textContent='';
+  } else {
+    el.style.backgroundImage='';
+    paintAvatar(el, name);
+    if(el.childNodes[0] && el.childNodes[0].nodeType===3) el.childNodes[0].textContent=name[0].toUpperCase();
+  }
+}
 
 function showToast(msg, dur=2800){
   const t=$('toast'); t.textContent=msg; t.classList.add('show');
@@ -1399,6 +1457,7 @@ auth.onAuthStateChanged(async user=>{
     const doc=await db.collection('users').doc(user.uid).get();
     if(doc.exists){
       myName=doc.data().username;
+      myPhotoURL=doc.data().photoURL||null;
     } else {
       // Compte connecté via SSO TalcoITN (ou tout compte Firebase sans profil
       // Exchange existant) : on crée automatiquement le profil manquant, en
@@ -1424,11 +1483,10 @@ auth.onAuthStateChanged(async user=>{
     $('login-screen').classList.add('hidden');
     $('app').classList.remove('hidden');
     $('me-name').textContent=myName;
-    $('me-avatar').childNodes[0].textContent=myName[0].toUpperCase();
-    paintAvatar($('me-avatar'), myName);
+    renderAvatarPhoto($('me-avatar'), myName, myPhotoURL);
     listenConvs();
   } else {
-    me=null; myName=null;
+    me=null; myName=null; myPhotoURL=null;
     $('login-screen').classList.remove('hidden');
     $('app').classList.add('hidden');
     if(unsubConvs)unsubConvs();
@@ -1527,6 +1585,7 @@ function renderConvList(){
       name=data.memberNames?data.memberNames[otherUid]:'?';
       avLetter=name[0].toUpperCase();
     }
+    const otherUidForClick=data.isGroup?null:data.members.find(m=>m!==me.uid);
     const item=document.createElement('div');
     item.className='conv-item'+(doc.id===activeConvId?' active':'');
     item.dataset.name=name;
@@ -1539,20 +1598,27 @@ function renderConvList(){
         <div class="conv-bottom"><span class="conv-last">${esc(last)}</span></div>
       </div>
       <button class="conv-del-btn" title="Supprimer">🗑️</button>`;
-    item.onclick=()=>openConv(doc.id,name,data.isGroup||false);
+    item.onclick=()=>openConv(doc.id,name,data.isGroup||false,otherUidForClick);
     item.querySelector('.conv-del-btn').onclick=(e)=>{ e.stopPropagation(); deleteConversation(doc.id, name); };
     list.appendChild(item);
   });
 }
 
 /* ===== OPEN CONV ===== */
-function openConv(convId, name, isGroup){
-  activeConvId=convId; activeIsGroup=isGroup;
+function openConv(convId, name, isGroup, otherUid){
+  activeConvId=convId; activeIsGroup=isGroup; activeOtherUid=otherUid||null;
   $('empty-state').classList.add('hidden');
   $('chat-panel').classList.remove('hidden');
   $('chat-title').textContent=name;
-  $('chat-avatar').childNodes[0].textContent=name[0].toUpperCase();
   paintAvatar($('chat-avatar'), name);
+  $('chat-avatar').childNodes[0].textContent=name[0].toUpperCase();
+  $('chat-avatar').style.backgroundImage='';
+  if(!isGroup && otherUid){
+    db.collection('users').doc(otherUid).get().then(d=>{
+      if(d.exists && activeOtherUid===otherUid) renderAvatarPhoto($('chat-avatar'), name, d.data().photoURL||null);
+    }).catch(()=>{});
+  }
+  $('view-profile-btn').style.display=isGroup?'none':'';
   $('chat-status-dot').className=isGroup?'status-dot online':'status-dot online';
   $('chat-sub-text').textContent=isGroup?'Groupe':'Actif maintenant';
   document.querySelectorAll('.conv-item').forEach(el=>el.classList.remove('active'));
@@ -1652,7 +1718,7 @@ async function startDM(uid, username){
       isGroup:false, lastMessage:'', lastMessageAt:firebase.firestore.FieldValue.serverTimestamp()
     });
   }
-  openConv(convId,username,false);
+  openConv(convId,username,false,uid);
 }
 
 /* ===== NEW GROUP ===== */
@@ -1911,6 +1977,90 @@ function watchOnlineStatus(uid){
     }
   });
 }
+
+/* ===== MON PROFIL (pseudo / mot de passe / photo) ===== */
+function openMyProfileModal(){
+  $('mp-error').textContent='';
+  $('mp-pseudo-input').value=myName||'';
+  $('mp-pass-input').value='';
+  renderAvatarPhoto($('mp-avatar-preview'), myName||'?', myPhotoURL);
+  $('myprofile-modal').classList.remove('hidden');
+}
+function closeMyProfileModal(){ $('myprofile-modal').classList.add('hidden'); }
+$('my-profile-btn').onclick=openMyProfileModal;
+$('mp-cancel').onclick=closeMyProfileModal;
+
+let mpPendingPhoto=undefined; // undefined = pas touché, null = retirer, string = nouvelle photo (dataURL)
+$('mp-photo-btn').onclick=()=>$('mp-photo-input').click();
+$('mp-avatar-preview').onclick=()=>$('mp-photo-input').click();
+$('mp-photo-input').onchange=(e)=>{
+  const file=e.target.files[0]; if(!file) return;
+  if(file.size>1500000){ $('mp-error').textContent="Image trop lourde (1.5 Mo max)."; return; }
+  const reader=new FileReader();
+  reader.onload=()=>{
+    mpPendingPhoto=reader.result;
+    renderAvatarPhoto($('mp-avatar-preview'), $('mp-pseudo-input').value.trim()||myName, mpPendingPhoto);
+  };
+  reader.readAsDataURL(file);
+};
+$('mp-photo-remove').onclick=()=>{
+  mpPendingPhoto=null;
+  renderAvatarPhoto($('mp-avatar-preview'), $('mp-pseudo-input').value.trim()||myName, null);
+};
+
+$('mp-confirm').onclick=async ()=>{
+  const newPseudo=$('mp-pseudo-input').value.trim();
+  const newPass=$('mp-pass-input').value;
+  const err=$('mp-error'); err.textContent='';
+  if(!newPseudo){ err.textContent="Le pseudo ne peut pas être vide."; return; }
+  if(newPass && newPass.length<6){ err.textContent="Le nouveau mot de passe doit faire 6 caractères min."; return; }
+  const btn=$('mp-confirm'); btn.textContent='…'; btn.disabled=true;
+  try{
+    const update={ username:newPseudo, usernameLower:newPseudo.toLowerCase() };
+    if(mpPendingPhoto!==undefined) update.photoURL = mpPendingPhoto;
+    await db.collection('users').doc(me.uid).set(update, {merge:true});
+    if(me.displayName!==newPseudo){ try{ await me.updateProfile({displayName:newPseudo}); }catch(e){} }
+    if(newPass){ await me.updatePassword(newPass); }
+    myName=newPseudo;
+    if(mpPendingPhoto!==undefined) myPhotoURL = mpPendingPhoto;
+    mpPendingPhoto=undefined;
+    $('me-name').textContent=myName;
+    renderAvatarPhoto($('me-avatar'), myName, myPhotoURL);
+    showToast('✅ Profil mis à jour.');
+    closeMyProfileModal();
+  }catch(e){
+    err.textContent = e.code==='auth/requires-recent-login'
+      ? "Reconnexion nécessaire pour changer le mot de passe — déconnecte-toi puis reconnecte-toi et réessaie."
+      : ('Erreur : '+(e.message||e.code));
+  }finally{
+    btn.textContent='Enregistrer →'; btn.disabled=false;
+  }
+};
+
+/* ===== PROFIL D'UN CONTACT (lecture seule) ===== */
+$('view-profile-btn').onclick=async ()=>{
+  if(activeIsGroup || !activeOtherUid) return;
+  $('cp-name').textContent=$('chat-title').textContent;
+  $('cp-status').textContent='Chargement…';
+  renderAvatarPhoto($('cp-avatar'), $('chat-title').textContent, null);
+  $('contact-profile-modal').classList.remove('hidden');
+  try{
+    const doc=await db.collection('users').doc(activeOtherUid).get();
+    if(doc.exists){
+      const d=doc.data();
+      $('cp-name').textContent=d.username||$('chat-title').textContent;
+      renderAvatarPhoto($('cp-avatar'), d.username||'?', d.photoURL||null);
+      if(d.online) $('cp-status').textContent='🟢 En ligne';
+      else if(d.lastSeen) $('cp-status').textContent='⚫ Vu '+relTime(d.lastSeen);
+      else $('cp-status').textContent='⚫ Hors ligne';
+    } else {
+      $('cp-status').textContent='Profil introuvable.';
+    }
+  }catch(e){
+    $('cp-status').textContent='Erreur de chargement.';
+  }
+};
+$('cp-close').onclick=()=>$('contact-profile-modal').classList.add('hidden');
 <\/script>
 </body>
 </html>
@@ -4097,6 +4247,36 @@ window.addEventListener('resize', positionGateTabBg);
 // e-mail interne des deux côtés pour pointer vers le même compte.
 const uToEmail = u => u.trim().toLowerCase().replace(/[^a-z0-9_.]/g,'')+'@talcoexchange.app';
 
+/* ===== CODE ADMIN QUOTIDIEN (création de compte) =====
+   Un code au format AAAA000000 (4 lettres + 6 chiffres), généré côté client
+   à partir de la date du jour + un sel fixe, donc identique pour tout le
+   monde le même jour sans avoir besoin de stockage serveur. Il change
+   automatiquement chaque nuit à minuit. Il n'est affiché en clair dans les
+   Settings qu'aux comptes dont le pseudo est "Anton" ou "Talco" — les autres
+   doivent se le faire communiquer directement par eux. */
+const ADMIN_CODE_SALT = "TalcoITN-secure-daily-code-v1";
+function dailyAdminCodeSeedString(){
+  const now=new Date();
+  return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}-${ADMIN_CODE_SALT}`;
+}
+function seededHash(str){
+  let h=2166136261;
+  for(let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h>>>0;
+}
+function getDailyAdminCode(){
+  let h = seededHash(dailyAdminCodeSeedString());
+  const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let code='';
+  for(let i=0;i<4;i++){ code += letters[h%26]; h = Math.floor(h/26) || seededHash(code+dailyAdminCodeSeedString()); }
+  let h2 = seededHash(dailyAdminCodeSeedString()+'#digits');
+  let digits='';
+  for(let i=0;i<6;i++){ digits += (h2%10); h2 = Math.floor(h2/10) || seededHash(digits+dailyAdminCodeSeedString()); }
+  return code+digits;
+}
+// Pseudos autorisés à voir le code admin du jour dans les Settings.
+const ADMIN_CODE_VISIBLE_TO = ["anton","talco"];
+
 // Traduction des codes d'erreur Firebase les plus fréquents
 function fbErrorMessage(err){
   const map = {
@@ -4132,7 +4312,10 @@ document.getElementById('btnLogin').addEventListener('click', ()=>{
 document.getElementById('btnSignup').addEventListener('click', ()=>{
   const pseudo=document.getElementById('signupName').value.trim();
   const pass=document.getElementById('signupPass').value;
+  const adminCode=document.getElementById('signupAdminCode').value.trim().toUpperCase();
   if(!pseudo||pass.length<6){ gateError.textContent="Pseudo et mot de passe (6 car. min.) requis."; return; }
+  if(!adminCode){ gateError.textContent="Le code admin du jour est requis pour créer un compte."; return; }
+  if(adminCode!==getDailyAdminCode()){ gateError.textContent="Code admin invalide ou expiré — demandez le code du jour à un administrateur."; return; }
   const email=uToEmail(pseudo);
   if(fbReady){
     firebase.auth().createUserWithEmailAndPassword(email,pass)
@@ -5029,6 +5212,12 @@ function renderSettings(){
       <div class="set-row"><span>Utilisateur actif</span><span id="setUserLabel"></span></div>
       <div class="set-row"><span>Se déconnecter</span><button class="set-btn danger" id="setLogout">Déconnexion</button></div>
     </div>
+    ${currentUser && !currentUser.guest && ADMIN_CODE_VISIBLE_TO.includes((currentUser.name||'').toLowerCase()) ? `
+    <div class="set-section glass">
+      <div class="set-title">🔑 Code admin du jour</div>
+      <div class="set-row"><span>Code pour créer un compte</span><span style="font-family:var(--font-m,monospace);font-weight:800;letter-spacing:.06em;font-size:.85rem;">${getDailyAdminCode()}</span></div>
+      <div class="set-row" style="font-size:.65rem;color:var(--text-2);line-height:1.5;">Ce code change automatiquement chaque jour à minuit. Visible uniquement par Anton et Talco — communiquez-le vous-même aux personnes qui doivent créer un compte.</div>
+    </div>` : ''}
     ${currentUser && currentUser.isAdmin ? `
     <div class="set-section glass">
       <div class="set-title">👑 Comptes (admin)</div>
