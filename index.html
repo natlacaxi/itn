@@ -6,7 +6,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>TalcoITN — Talco IT Networks</title>
+<title>TalcoITN — Talco IT Networks | Portail sécurisé</title>
 <meta name="description" content="TalcoITN (Talco IT Networks) — portail sécurisé regroupant Exchange, Cloud, Intelligence, Music, Scientis, Enseignement et Pratics en un seul accès.">
 <meta name="keywords" content="TalcoITN, ITN, Talco, Talco IT Networks, TalcoIT, TalcoITNetworks, TalcoExchange, portail TalcoITN, messagerie TalcoITN">
 <meta name="robots" content="index, follow">
@@ -41,7 +41,6 @@
 }
 </script>
 
-<!-- ✏️ Favicon ITN — rond violet uni, distinct des autres modules -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c5cff'/%3E%3Cstop offset='1' stop-color='%23ff5fa8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='7' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='32' r='21' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' stroke-dasharray='9 7'/%3E%3C/svg%3E">
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -152,6 +151,26 @@ input{font-family:inherit;color:inherit;}
 .gate-btn.ghost:disabled{opacity:.45;cursor:not-allowed;}
 .gate-btn.ghost:disabled:active{transform:none;}
 .gate-error{font-size:.74rem;color:var(--danger);min-height:1.2em;margin-bottom:.5rem;font-weight:600;}
+
+/* ===== Toggle "œil" mot de passe — style iOS 26 ===== */
+.pw-wrap{position:relative;}
+.pw-wrap input{padding-right:42px!important;}
+.pw-eye{
+  position:absolute;right:5px;top:50%;transform:translateY(-50%);
+  width:30px;height:30px;border:none;border-radius:50%;
+  background:rgba(255,255,255,.06);backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;padding:0;color:var(--text-2);
+  transition:background .25s cubic-bezier(.22,.82,.24,1),transform .25s cubic-bezier(.22,.82,.24,1),color .25s;
+}
+.pw-eye:hover{background:rgba(255,255,255,.12);}
+.pw-eye:active{transform:translateY(-50%) scale(.88);}
+.pw-eye svg{width:16px;height:16px;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .2s;}
+.pw-eye .eye-open{position:absolute;}
+.pw-eye .eye-closed{position:absolute;opacity:0;transform:scale(.5) rotate(-15deg);}
+.pw-eye.is-visible .eye-open{opacity:0;transform:scale(.5) rotate(15deg);}
+.pw-eye.is-visible .eye-closed{opacity:1;transform:scale(1) rotate(0);}
+.pw-eye.is-visible{background:rgba(109,93,252,.2);color:var(--accent-1);}
 .gate-guest-note{font-size:.68rem;color:var(--text-2);margin-top:1rem;text-align:center;line-height:1.6;}
 .gate-fw-note{font-family:var(--font-m);font-size:.6rem;color:var(--text-2);margin-top:1.6rem;text-align:center;opacity:.6;max-width:340px;line-height:1.6;}
 
@@ -465,8 +484,8 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;z-index:1;}
       <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9" stroke-dasharray="4 3"/></svg>
     </div>
     <h1 class="gate-logo">TalcoITN</h1>
-    <div class="gate-sub"><center>Talco IT Networks (ITN)<br>Administration Talco IT-Networks 2026</center><div>
-    <div class="gate-sub" style="margin-top:.2rem;opacity:.6;"><center>Version 16.3</center></div>
+    <div class="gate-sub">Talco IT Networks (ITN)</div>
+    <div class="gate-sub" style="margin-top:.2rem;opacity:.6;">Version 15.2</div>
   </div>
 
   <div class="gate-card glass">
@@ -480,20 +499,30 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;z-index:1;}
 
     <div id="tab-login">
       <input class="gate-field" type="text" id="loginEmail" placeholder="Nom d'utilisateur" autocomplete="username">
-      <input class="gate-field" type="password" id="loginPass" placeholder="Mot de passe" autocomplete="current-password">
+      <div class="pw-wrap">
+        <input class="gate-field" type="password" id="loginPass" placeholder="Mot de passe" autocomplete="current-password">
+        <button type="button" class="pw-eye" data-target="loginPass">
+          <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+      </div>
       <button class="gate-btn" id="btnLogin">Se connecter</button>
     </div>
 
     <div id="tab-signup" style="display:none;">
       <input class="gate-field" type="text" id="signupName" placeholder="Nom d'utilisateur" autocomplete="username">
-      <input class="gate-field" type="password" id="signupPass" placeholder="Mot de passe (6 caractères min.)" autocomplete="new-password">
-      <input class="gate-field" type="text" id="signupAdminCode" placeholder="Code admin du jour" autocomplete="off" style="text-transform:uppercase;">
-      <div class="gate-sub" style="margin:-.3rem 0 .6rem 0;font-size:.62rem;opacity:.65;">Code fourni par un administrateur, requis pour créer un compte. Change chaque jour.</div>
+      <div class="pw-wrap">
+        <input class="gate-field" type="password" id="signupPass" placeholder="Mot de passe (6 caractères min.)" autocomplete="new-password">
+        <button type="button" class="pw-eye" data-target="signupPass">
+          <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+      </div>
       <button class="gate-btn" id="btnSignup">Créer mon compte</button>
     </div>
 
     <button class="gate-btn ghost" id="btnGuest">Continuer en invité</button>
-    <div class="gate-guest-note">Le mode invité est utilisable <b>1 fois toutes les 24h</b> (par navigateur).<br>Un compte TalcoITN est requis pour un accès illimité.</div>
+    <div class="gate-guest-note">🔒 Mode invité désactivé pour des raisons de sécurité.<br>Un compte TalcoITN est requis pour accéder au portail.</div>
   </div>
 
   <div class="gate-fw-note" id="fwNote">Connexion via Firebase Authentication (par pseudo). Renseignez votre <code>firebaseConfig</code> dans le script pour l'activer — sinon le site fonctionne en simulation locale.</div>
@@ -600,8 +629,8 @@ main#stage{flex:1 1 auto;position:relative;overflow:hidden;z-index:1;}
 <title>TalcoExchange</title>
 
 <!-- ✏️ FAVICON — remplace la valeur data:image/png;base64, par ton image en base64 -->
-<link rel="icon" type="image/png" href="data:image/png;base64,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">
-<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c5cff'/%3E%3Cstop offset='1' stop-color='%23ff5fa8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='7' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='32' r='21' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' stroke-dasharray='9 7'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c5cff'/%3E%3Cstop offset='1' stop-color='%23ff5fa8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='7' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='32' r='21' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' stroke-dasharray='9 7'/%3E%3C/svg%3E">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
@@ -1039,6 +1068,37 @@ button,input,textarea{font-family:var(--font);}
 }
 .btn-ok:hover{filter:brightness(1.1);}
 
+.field-vis-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.field-vis-row input[type="text"]{
+  flex:1;padding:9px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:9px;color:var(--text);font-size:13px;margin-bottom:0;
+}
+.field-vis-row input[type="text"]:focus{outline:none;border-color:rgba(99,102,241,.5);}
+.vis-check{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--sub);white-space:nowrap;cursor:pointer;user-select:none;flex-shrink:0;}
+.vis-check input{accent-color:var(--a1);cursor:pointer;}
+
+/* ===== Toggle "œil" mot de passe — style iOS 26 ===== */
+.pw-wrap{position:relative;}
+.pw-wrap input{padding-right:42px!important;}
+.pw-eye{
+  position:absolute;right:5px;top:50%;transform:translateY(-50%);
+  width:30px;height:30px;border:none;border-radius:50%;
+  background:rgba(255,255,255,.06);backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;padding:0;color:var(--sub,#7a85a8);
+  transition:background .25s cubic-bezier(.22,.82,.24,1),transform .25s cubic-bezier(.22,.82,.24,1),color .25s;
+}
+.pw-eye:hover{background:rgba(255,255,255,.12);}
+.pw-eye:active{transform:translateY(-50%) scale(.88);}
+.pw-eye svg{width:16px;height:16px;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .2s;}
+.pw-eye .eye-open{position:absolute;}
+.pw-eye .eye-closed{position:absolute;opacity:0;transform:scale(.5) rotate(-15deg);}
+.pw-eye.is-visible .eye-open{opacity:0;transform:scale(.5) rotate(15deg);}
+.pw-eye.is-visible .eye-closed{opacity:1;transform:scale(1) rotate(0);}
+.pw-eye.is-visible{background:rgba(124,92,255,.18);color:#a78bfa;}
+.vp-info-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;margin-bottom:8px;font-size:13px;text-align:left;}
+.vp-info-row .vi-label{opacity:.55;font-size:15px;}
+
 /* Group member list in modal */
 #group-members-list{margin-bottom:10px;display:flex;flex-wrap:wrap;gap:6px;}
 .member-tag{
@@ -1119,7 +1179,14 @@ button,input,textarea{font-family:var(--font);}
     </div>
     <div class="field">
       <label>Mot de passe</label>
-      <input type="password" id="password-input" placeholder="••••••••">
+      <div style="position:relative;">
+        <input type="password" id="password-input" placeholder="••••••••" style="padding-right:38px;">
+        <button type="button" id="pw-toggle" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px;opacity:.55;padding:6px;">👁️</button>
+      </div>
+    </div>
+    <div class="field hidden" id="admincode-field">
+      <label>Code admin</label>
+      <input type="text" id="admincode-input" placeholder="AAAA000000" autocomplete="off" style="text-transform:uppercase;">
     </div>
     <div class="err" id="error-msg"></div>
     <button class="btn-main" id="submit-btn">Se connecter →</button>
@@ -1151,8 +1218,8 @@ button,input,textarea{font-family:var(--font);}
         <div id="me-name">...</div>
         <div id="me-status-label" style="font-size:11px;color:var(--sub);">En ligne</div>
       </div>
-      <button class="icon-btn" id="my-profile-btn" title="Mon profil">⚙️</button>
       <button class="icon-btn" id="new-dm-btn" title="Nouveau message">✏️</button>
+      <button class="icon-btn" id="my-settings-btn" title="Réglages du profil">⚙️</button>
       <button class="icon-btn" id="logout-btn" title="Déconnexion" style="font-size:14px;">⏻</button>
     </div>
 
@@ -1237,41 +1304,83 @@ button,input,textarea{font-family:var(--font);}
   </div>
 </div>
 
-<!-- MODAL: Mon profil -->
-<div id="myprofile-modal" class="modal-overlay hidden">
-  <div class="modal">
-    <h3>Mon profil</h3>
-    <p>Modifie tes informations personnelles</p>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:14px;">
-      <div class="av xl" id="mp-avatar-preview" style="cursor:pointer;">?</div>
-      <input type="file" id="mp-photo-input" accept="image/*" style="display:none;">
-      <button class="btn-ghost" id="mp-photo-btn" style="padding:6px 12px;font-size:11px;">Changer la photo</button>
-      <button class="btn-ghost" id="mp-photo-remove" style="padding:6px 12px;font-size:11px;">Retirer la photo</button>
+<!-- MODAL: Réglages / mon profil -->
+<div id="my-settings-modal" class="modal-overlay hidden">
+  <div class="modal" style="width:380px;max-height:88vh;overflow-y:auto;">
+    <h3>Réglages du profil</h3>
+    <p>Modifie ton pseudo, ta photo, ton mot de passe</p>
+
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+      <div class="av xl" id="settings-avatar-preview" style="cursor:pointer;">?</div>
+      <div>
+        <button class="btn-ghost" id="settings-photo-btn" style="padding:7px 14px;">🖼️ Changer la photo</button>
+        <input type="file" id="settings-photo-input" accept="image/*" class="hidden">
+        <div style="font-size:11px;color:var(--sub);margin-top:5px;" id="settings-photo-hint"></div>
+      </div>
     </div>
-    <label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px;">Pseudo affiché</label>
-    <input type="text" id="mp-pseudo-input" placeholder="Pseudo affiché" autocomplete="off">
-    <label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px;">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
-    <input type="password" id="mp-pass-input" placeholder="Nouveau mot de passe (6 car. min.)" autocomplete="new-password">
-    <div class="err" id="mp-error"></div>
+
+    <label style="display:block;font-size:11px;font-weight:600;color:var(--sub);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;">Pseudo</label>
+    <input type="text" id="settings-pseudo-input" placeholder="Pseudo">
+
+    <label style="display:block;font-size:11px;font-weight:600;color:var(--sub);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;margin-top:8px;">Nouveau mot de passe (optionnel)</label>
+    <div style="position:relative;">
+      <input type="password" id="settings-pass-input" placeholder="Laisser vide pour ne pas changer" style="padding-right:38px;">
+      <button type="button" id="settings-pw-toggle" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px;opacity:.55;padding:6px;">👁️</button>
+    </div>
+
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+      <div style="font-size:11px;font-weight:700;color:var(--sub);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;">Infos de contact — coche pour rendre visible sur ton profil</div>
+
+      <div class="field-vis-row">
+        <input type="text" id="settings-phone-input" placeholder="Numéro de téléphone">
+        <label class="vis-check"><input type="checkbox" id="settings-phone-vis"> Visible</label>
+      </div>
+      <div class="field-vis-row">
+        <input type="text" id="settings-email-input" placeholder="Adresse e-mail">
+        <label class="vis-check"><input type="checkbox" id="settings-email-vis"> Visible</label>
+      </div>
+      <div class="field-vis-row">
+        <input type="text" id="settings-snap-input" placeholder="👻 Snapchat">
+        <label class="vis-check"><input type="checkbox" id="settings-snap-vis"> Visible</label>
+      </div>
+      <div class="field-vis-row">
+        <input type="text" id="settings-insta-input" placeholder="📷 Instagram">
+        <label class="vis-check"><input type="checkbox" id="settings-insta-vis"> Visible</label>
+      </div>
+      <div class="field-vis-row">
+        <input type="text" id="settings-tiktok-input" placeholder="🎵 TikTok">
+        <label class="vis-check"><input type="checkbox" id="settings-tiktok-vis"> Visible</label>
+      </div>
+      <div class="field-vis-row">
+        <input type="text" id="settings-discord-input" placeholder="🎮 Discord">
+        <label class="vis-check"><input type="checkbox" id="settings-discord-vis"> Visible</label>
+      </div>
+    </div>
+
+    <div class="err" id="settings-error"></div>
     <div class="modal-actions">
-      <button class="btn-ghost" id="mp-cancel">Annuler</button>
-      <button class="btn-ok" id="mp-confirm">Enregistrer →</button>
+      <button class="btn-ghost" id="settings-cancel">Fermer</button>
+      <button class="btn-ok" id="settings-save">Enregistrer</button>
+    </div>
+
+    <div id="admin-code-box" class="hidden" style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+      <div style="font-size:11px;font-weight:700;color:var(--a2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;">🔑 Code admin du jour</div>
+      <div id="admin-code-value" style="font-family:monospace;font-size:20px;font-weight:800;letter-spacing:2px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;padding:10px 14px;text-align:center;">…</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:6px;">Change automatiquement chaque jour à 0h. Communique-le uniquement aux personnes autorisées à créer un compte.</div>
     </div>
   </div>
 </div>
 
-<!-- MODAL: Profil d'un contact (lecture seule) -->
-<div id="contact-profile-modal" class="modal-overlay hidden">
-  <div class="modal">
-    <h3>Profil</h3>
-    <p>Informations de ce contact</p>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:8px;">
-      <div class="av xl" id="cp-avatar">?</div>
-      <div style="font-weight:800;font-size:16px;" id="cp-name">...</div>
-      <div style="font-size:12px;color:var(--sub);" id="cp-status">...</div>
-    </div>
+<!-- MODAL: Voir profil d'un contact -->
+<div id="view-profile-modal" class="modal-overlay hidden">
+  <div class="modal" style="width:340px;text-align:center;">
+    <div class="av xl" id="vp-avatar" style="margin:0 auto 14px;">?</div>
+    <h3 id="vp-name" style="text-align:center;">...</h3>
+    <p id="vp-status" style="text-align:center;">...</p>
+    <div style="font-size:12px;color:var(--sub);margin:14px 0 10px;text-align:center;" id="vp-meta"></div>
+    <div id="vp-info-list" style="text-align:left;"></div>
     <div class="modal-actions">
-      <button class="btn-ok" id="cp-close" style="width:100%;">Fermer</button>
+      <button class="btn-ok" id="vp-close" style="flex:1;">Fermer</button>
     </div>
   </div>
 </div>
@@ -1352,8 +1461,8 @@ window.addEventListener('resize', setVh);
 window.addEventListener('orientationchange', setVh);
 
 /* ===== STATE ===== */
-let me = null, myName = null, myPhotoURL = null, activeOtherUid = null;
-let activeConvId = null, activeIsGroup = false;
+let me = null, myName = null;
+let activeConvId = null, activeIsGroup = false, activeOtherUid = null;
 let unsubMsgs = null, unsubConvs = null;
 let allConvs = [];
 let currentTab = 'direct';
@@ -1386,21 +1495,6 @@ function avatarColor(name){
   return `linear-gradient(135deg, hsl(${hue},72%,52%), hsl(${hue2},72%,45%))`;
 }
 function paintAvatar(el, name){ if(el) el.style.background = avatarColor(name); }
-/* Affiche une photo de profil si disponible, sinon retombe sur la couleur + initiale */
-function renderAvatarPhoto(el, name, photoURL){
-  if(!el) return;
-  if(photoURL){
-    el.style.backgroundImage=`url("${photoURL}")`;
-    el.style.backgroundSize='cover';
-    el.style.backgroundPosition='center';
-    el.style.background=el.style.backgroundImage+', '+avatarColor(name);
-    if(el.childNodes[0] && el.childNodes[0].nodeType===3) el.childNodes[0].textContent='';
-  } else {
-    el.style.backgroundImage='';
-    paintAvatar(el, name);
-    if(el.childNodes[0] && el.childNodes[0].nodeType===3) el.childNodes[0].textContent=name[0].toUpperCase();
-  }
-}
 
 function showToast(msg, dur=2800){
   const t=$('toast'); t.textContent=msg; t.classList.add('show');
@@ -1433,6 +1527,12 @@ async function doAuth(){
   const btn=$('submit-btn'); btn.textContent='…'; btn.disabled=true;
   try{
     if(isReg){
+      const code=$('admincode-input').value;
+      const okCode = await verifyAdminCode(code);
+      if(!okCode){
+        err.textContent="Code admin invalide ou expiré. Demande le code du jour à Anton ou Talco.";
+        btn.textContent='Créer le compte →'; btn.disabled=false; return;
+      }
       const c=await auth.createUserWithEmailAndPassword(uToEmail(u),p);
       await db.collection('users').doc(c.user.uid).set({
         username:u, usernameLower:u.toLowerCase(),
@@ -1449,6 +1549,19 @@ async function doAuth(){
 }
 $('submit-btn').onclick=doAuth;
 $('password-input').onkeydown=e=>{if(e.key==='Enter')doAuth();};
+
+function wirePwToggle(btnId, inputId){
+  const btn=$(btnId), inp=$(inputId);
+  if(!btn||!inp) return;
+  btn.onclick=()=>{
+    const show = inp.type==='password';
+    inp.type = show?'text':'password';
+    btn.style.opacity = show?'1':'.55';
+    btn.textContent = show?'🙈':'👁️';
+  };
+}
+wirePwToggle('pw-toggle','password-input');
+wirePwToggle('settings-pw-toggle','settings-pass-input');
 $('logout-btn').onclick=()=>auth.signOut();
 
 auth.onAuthStateChanged(async user=>{
@@ -1457,7 +1570,6 @@ auth.onAuthStateChanged(async user=>{
     const doc=await db.collection('users').doc(user.uid).get();
     if(doc.exists){
       myName=doc.data().username;
-      myPhotoURL=doc.data().photoURL||null;
     } else {
       // Compte connecté via SSO TalcoITN (ou tout compte Firebase sans profil
       // Exchange existant) : on crée automatiquement le profil manquant, en
@@ -1483,10 +1595,17 @@ auth.onAuthStateChanged(async user=>{
     $('login-screen').classList.add('hidden');
     $('app').classList.remove('hidden');
     $('me-name').textContent=myName;
-    renderAvatarPhoto($('me-avatar'), myName, myPhotoURL);
+    $('me-avatar').childNodes[0].textContent=myName[0].toUpperCase();
+    paintAvatar($('me-avatar'), myName);
+    const myPhoto = doc.exists ? doc.data().photoURL : null;
+    if(myPhoto){
+      $('me-avatar').style.backgroundImage=`url(${myPhoto})`;
+      $('me-avatar').style.backgroundSize='cover'; $('me-avatar').style.backgroundPosition='center';
+      $('me-avatar').childNodes[0].textContent='';
+    }
     listenConvs();
   } else {
-    me=null; myName=null; myPhotoURL=null;
+    me=null; myName=null;
     $('login-screen').classList.remove('hidden');
     $('app').classList.add('hidden');
     if(unsubConvs)unsubConvs();
@@ -1577,15 +1696,14 @@ function renderConvList(){
   }
   filtered.forEach(doc=>{
     const data=doc.data();
-    let name='?', avLetter='?';
+    let name='?', avLetter='?', otherUid=null;
     if(data.isGroup){
       name=data.groupName||'Groupe'; avLetter=name[0].toUpperCase();
     } else {
-      const otherUid=data.members.find(m=>m!==me.uid);
+      otherUid=data.members.find(m=>m!==me.uid);
       name=data.memberNames?data.memberNames[otherUid]:'?';
       avLetter=name[0].toUpperCase();
     }
-    const otherUidForClick=data.isGroup?null:data.members.find(m=>m!==me.uid);
     const item=document.createElement('div');
     item.className='conv-item'+(doc.id===activeConvId?' active':'');
     item.dataset.name=name;
@@ -1598,7 +1716,14 @@ function renderConvList(){
         <div class="conv-bottom"><span class="conv-last">${esc(last)}</span></div>
       </div>
       <button class="conv-del-btn" title="Supprimer">🗑️</button>`;
-    item.onclick=()=>openConv(doc.id,name,data.isGroup||false,otherUidForClick);
+    const nameEl=item.querySelector('.conv-name');
+    if(!data.isGroup && otherUid){
+      nameEl.style.cursor='pointer';
+      nameEl.style.textDecoration='underline';
+      nameEl.style.textDecorationColor='transparent';
+      nameEl.onclick=(e)=>{ e.stopPropagation(); openProfileModal(otherUid, name); };
+    }
+    item.onclick=()=>openConv(doc.id,name,data.isGroup||false,otherUid);
     item.querySelector('.conv-del-btn').onclick=(e)=>{ e.stopPropagation(); deleteConversation(doc.id, name); };
     list.appendChild(item);
   });
@@ -1610,15 +1735,9 @@ function openConv(convId, name, isGroup, otherUid){
   $('empty-state').classList.add('hidden');
   $('chat-panel').classList.remove('hidden');
   $('chat-title').textContent=name;
-  paintAvatar($('chat-avatar'), name);
+  $('chat-title').style.cursor=isGroup?'default':'pointer';
   $('chat-avatar').childNodes[0].textContent=name[0].toUpperCase();
-  $('chat-avatar').style.backgroundImage='';
-  if(!isGroup && otherUid){
-    db.collection('users').doc(otherUid).get().then(d=>{
-      if(d.exists && activeOtherUid===otherUid) renderAvatarPhoto($('chat-avatar'), name, d.data().photoURL||null);
-    }).catch(()=>{});
-  }
-  $('view-profile-btn').style.display=isGroup?'none':'';
+  paintAvatar($('chat-avatar'), name);
   $('chat-status-dot').className=isGroup?'status-dot online':'status-dot online';
   $('chat-sub-text').textContent=isGroup?'Groupe':'Actif maintenant';
   document.querySelectorAll('.conv-item').forEach(el=>el.classList.remove('active'));
@@ -1978,89 +2097,219 @@ function watchOnlineStatus(uid){
   });
 }
 
-/* ===== MON PROFIL (pseudo / mot de passe / photo) ===== */
-function openMyProfileModal(){
-  $('mp-error').textContent='';
-  $('mp-pseudo-input').value=myName||'';
-  $('mp-pass-input').value='';
-  renderAvatarPhoto($('mp-avatar-preview'), myName||'?', myPhotoURL);
-  $('myprofile-modal').classList.remove('hidden');
-}
-function closeMyProfileModal(){ $('myprofile-modal').classList.add('hidden'); }
-$('my-profile-btn').onclick=openMyProfileModal;
-$('mp-cancel').onclick=closeMyProfileModal;
+/* =====================================================
+   👤 PROFIL — réglages perso + visibilité des contacts
+   ===================================================== */
+const PROFILE_FIELDS = [
+  {key:'phone',  label:'📞 Téléphone', icon:'📞'},
+  {key:'email',  label:'📧 E-mail',    icon:'📧'},
+  {key:'snap',   label:'👻 Snapchat',  icon:'👻'},
+  {key:'insta',  label:'📷 Instagram', icon:'📷'},
+  {key:'tiktok', label:'🎵 TikTok',    icon:'🎵'},
+  {key:'discord',label:'🎮 Discord',   icon:'🎮'}
+];
+const ADMIN_NAMES = ['anton','talco'];
+let myProfileData = {};
+let pendingPhotoDataUrl = null;
 
-let mpPendingPhoto=undefined; // undefined = pas touché, null = retirer, string = nouvelle photo (dataURL)
-$('mp-photo-btn').onclick=()=>$('mp-photo-input').click();
-$('mp-avatar-preview').onclick=()=>$('mp-photo-input').click();
-$('mp-photo-input').onchange=(e)=>{
+function isAdminName(name){ return name && ADMIN_NAMES.includes(name.toLowerCase()); }
+
+/* ----- Ouvrir mes réglages ----- */
+async function openMySettings(){
+  $('settings-error').textContent='';
+  $('settings-pass-input').value='';
+  $('settings-pseudo-input').value=myName||'';
+  pendingPhotoDataUrl=null;
+  const doc = await db.collection('users').doc(me.uid).get();
+  myProfileData = doc.exists ? doc.data() : {};
+  const vis = myProfileData.visibility||{};
+  PROFILE_FIELDS.forEach(f=>{
+    $(`settings-${f.key}-input`).value = myProfileData[f.key]||'';
+    $(`settings-${f.key}-vis`).checked = !!vis[f.key];
+  });
+  const av=$('settings-avatar-preview');
+  if(myProfileData.photoURL){
+    av.style.backgroundImage=`url(${myProfileData.photoURL})`;
+    av.style.backgroundSize='cover'; av.style.backgroundPosition='center';
+    av.textContent='';
+  } else {
+    av.style.backgroundImage='none';
+    av.style.background=avatarColor(myName);
+    av.textContent=(myName||'?')[0].toUpperCase();
+  }
+  const adminBox=$('admin-code-box');
+  if(isAdminName(myName)){
+    adminBox.classList.remove('hidden');
+    $('admin-code-value').textContent='…';
+    try{
+      const code = await getOrCreateDailyAdminCode(true);
+      $('admin-code-value').textContent=code;
+    }catch(e){ $('admin-code-value').textContent='Erreur'; }
+  } else {
+    adminBox.classList.add('hidden');
+  }
+  $('my-settings-modal').classList.remove('hidden');
+}
+$('my-settings-btn').onclick=openMySettings;
+$('settings-cancel').onclick=()=>$('my-settings-modal').classList.add('hidden');
+$('my-settings-modal').onclick=e=>{ if(e.target===$('my-settings-modal')) $('my-settings-modal').classList.add('hidden'); };
+
+/* ----- Changer la photo de profil (redimensionnée + convertie en base64) ----- */
+$('settings-photo-btn').onclick=()=>$('settings-photo-input').click();
+$('settings-avatar-preview').onclick=()=>$('settings-photo-input').click();
+$('settings-photo-input').onchange=(e)=>{
   const file=e.target.files[0]; if(!file) return;
-  if(file.size>1500000){ $('mp-error').textContent="Image trop lourde (1.5 Mo max)."; return; }
   const reader=new FileReader();
-  reader.onload=()=>{
-    mpPendingPhoto=reader.result;
-    renderAvatarPhoto($('mp-avatar-preview'), $('mp-pseudo-input').value.trim()||myName, mpPendingPhoto);
+  reader.onload=(ev)=>{
+    const img=new Image();
+    img.onload=()=>{
+      const size=256;
+      const canvas=document.createElement('canvas');
+      canvas.width=size; canvas.height=size;
+      const ctx=canvas.getContext('2d');
+      const scale=Math.max(size/img.width, size/img.height);
+      const sw=img.width*scale, sh=img.height*scale;
+      ctx.drawImage(img, (size-sw)/2, (size-sh)/2, sw, sh);
+      pendingPhotoDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+      const av=$('settings-avatar-preview');
+      av.style.backgroundImage=`url(${pendingPhotoDataUrl})`;
+      av.style.backgroundSize='cover'; av.style.backgroundPosition='center';
+      av.textContent='';
+      $('settings-photo-hint').textContent='Nouvelle photo prête — clique sur Enregistrer';
+    };
+    img.src=ev.target.result;
   };
   reader.readAsDataURL(file);
 };
-$('mp-photo-remove').onclick=()=>{
-  mpPendingPhoto=null;
-  renderAvatarPhoto($('mp-avatar-preview'), $('mp-pseudo-input').value.trim()||myName, null);
-};
 
-$('mp-confirm').onclick=async ()=>{
-  const newPseudo=$('mp-pseudo-input').value.trim();
-  const newPass=$('mp-pass-input').value;
-  const err=$('mp-error'); err.textContent='';
-  if(!newPseudo){ err.textContent="Le pseudo ne peut pas être vide."; return; }
-  if(newPass && newPass.length<6){ err.textContent="Le nouveau mot de passe doit faire 6 caractères min."; return; }
-  const btn=$('mp-confirm'); btn.textContent='…'; btn.disabled=true;
+/* ----- Enregistrer les réglages ----- */
+$('settings-save').onclick=async ()=>{
+  const err=$('settings-error'); err.textContent='';
+  const newPseudo=$('settings-pseudo-input').value.trim();
+  const newPass=$('settings-pass-input').value;
+  if(!newPseudo){ err.textContent='Le pseudo ne peut pas être vide.'; return; }
+  const btn=$('settings-save'); btn.textContent='…'; btn.disabled=true;
   try{
-    const update={ username:newPseudo, usernameLower:newPseudo.toLowerCase() };
-    if(mpPendingPhoto!==undefined) update.photoURL = mpPendingPhoto;
+    if(newPseudo.toLowerCase()!==(myName||'').toLowerCase()){
+      const clash = await db.collection('users').where('usernameLower','==',newPseudo.toLowerCase()).limit(1).get();
+      if(!clash.empty && clash.docs[0].id!==me.uid){
+        err.textContent='Ce pseudo est déjà pris.'; btn.textContent='Enregistrer'; btn.disabled=false; return;
+      }
+    }
+    const update={ username:newPseudo, usernameLower:newPseudo.toLowerCase(), visibility:{} };
+    PROFILE_FIELDS.forEach(f=>{
+      update[f.key]=$(`settings-${f.key}-input`).value.trim();
+      update.visibility[f.key]=$(`settings-${f.key}-vis`).checked;
+    });
+    if(pendingPhotoDataUrl) update.photoURL=pendingPhotoDataUrl;
     await db.collection('users').doc(me.uid).set(update, {merge:true});
-    if(me.displayName!==newPseudo){ try{ await me.updateProfile({displayName:newPseudo}); }catch(e){} }
-    if(newPass){ await me.updatePassword(newPass); }
+    if(newPass){
+      if(newPass.length<6){ err.textContent='Nouveau mot de passe : 6 caractères min.'; btn.textContent='Enregistrer'; btn.disabled=false; return; }
+      await me.updatePassword(newPass);
+    }
     myName=newPseudo;
-    if(mpPendingPhoto!==undefined) myPhotoURL = mpPendingPhoto;
-    mpPendingPhoto=undefined;
     $('me-name').textContent=myName;
-    renderAvatarPhoto($('me-avatar'), myName, myPhotoURL);
-    showToast('✅ Profil mis à jour.');
-    closeMyProfileModal();
+    if(pendingPhotoDataUrl){
+      $('me-avatar').style.backgroundImage=`url(${pendingPhotoDataUrl})`;
+      $('me-avatar').style.backgroundSize='cover'; $('me-avatar').style.backgroundPosition='center';
+      $('me-avatar').childNodes[0].textContent='';
+    } else {
+      paintAvatar($('me-avatar'), myName);
+      $('me-avatar').childNodes[0].textContent=myName[0].toUpperCase();
+    }
+    showToast('✅ Profil mis à jour');
+    $('my-settings-modal').classList.add('hidden');
   }catch(e){
     err.textContent = e.code==='auth/requires-recent-login'
-      ? "Reconnexion nécessaire pour changer le mot de passe — déconnecte-toi puis reconnecte-toi et réessaie."
-      : ('Erreur : '+(e.message||e.code));
-  }finally{
-    btn.textContent='Enregistrer →'; btn.disabled=false;
+      ? 'Reconnecte-toi puis réessaie pour changer le mot de passe.'
+      : 'Erreur : '+e.message;
   }
+  btn.textContent='Enregistrer'; btn.disabled=false;
 };
 
-/* ===== PROFIL D'UN CONTACT (lecture seule) ===== */
-$('view-profile-btn').onclick=async ()=>{
-  if(activeIsGroup || !activeOtherUid) return;
-  $('cp-name').textContent=$('chat-title').textContent;
-  $('cp-status').textContent='Chargement…';
-  renderAvatarPhoto($('cp-avatar'), $('chat-title').textContent, null);
-  $('contact-profile-modal').classList.remove('hidden');
+/* ----- Voir le profil d'un contact ----- */
+async function openProfileModal(uid, fallbackName){
+  $('vp-name').textContent=fallbackName||'...';
+  $('vp-status').textContent='...';
+  $('vp-info-list').innerHTML='';
+  const av=$('vp-avatar');
+  av.style.backgroundImage='none'; av.style.background=avatarColor(fallbackName); av.textContent=(fallbackName||'?')[0].toUpperCase();
+  $('view-profile-modal').classList.remove('hidden');
   try{
-    const doc=await db.collection('users').doc(activeOtherUid).get();
-    if(doc.exists){
-      const d=doc.data();
-      $('cp-name').textContent=d.username||$('chat-title').textContent;
-      renderAvatarPhoto($('cp-avatar'), d.username||'?', d.photoURL||null);
-      if(d.online) $('cp-status').textContent='🟢 En ligne';
-      else if(d.lastSeen) $('cp-status').textContent='⚫ Vu '+relTime(d.lastSeen);
-      else $('cp-status').textContent='⚫ Hors ligne';
+    const doc = await db.collection('users').doc(uid).get();
+    if(!doc.exists) return;
+    const d=doc.data();
+    $('vp-name').textContent=d.username||fallbackName;
+    $('vp-status').textContent = d.online ? '🟢 En ligne' : (d.lastSeen ? 'Vu '+relTime(d.lastSeen) : '⚫ Hors ligne');
+    if(d.photoURL){
+      av.style.backgroundImage=`url(${d.photoURL})`;
+      av.style.backgroundSize='cover'; av.style.backgroundPosition='center';
+      av.textContent='';
     } else {
-      $('cp-status').textContent='Profil introuvable.';
+      av.style.background=avatarColor(d.username);
+      av.textContent=(d.username||'?')[0].toUpperCase();
     }
-  }catch(e){
-    $('cp-status').textContent='Erreur de chargement.';
-  }
+    const vis=d.visibility||{};
+    const list=$('vp-info-list');
+    let any=false;
+    PROFILE_FIELDS.forEach(f=>{
+      if(vis[f.key] && d[f.key]){
+        any=true;
+        const row=document.createElement('div');
+        row.className='vp-info-row';
+        row.innerHTML=`<span class="vi-label">${f.icon}</span><span>${esc(d[f.key])}</span>`;
+        list.appendChild(row);
+      }
+    });
+    if(!any){
+      list.innerHTML='<div style="text-align:center;color:var(--muted);font-size:12px;padding:6px 0;">Aucune info de contact partagée</div>';
+    }
+  }catch(e){ console.error(e); }
+}
+$('vp-close').onclick=()=>$('view-profile-modal').classList.add('hidden');
+$('view-profile-modal').onclick=e=>{ if(e.target===$('view-profile-modal')) $('view-profile-modal').classList.add('hidden'); };
+$('view-profile-btn').onclick=()=>{ if(!activeIsGroup && activeOtherUid) openProfileModal(activeOtherUid, $('chat-title').textContent); };
+$('chat-title').onclick=()=>{ if(!activeIsGroup && activeOtherUid) openProfileModal(activeOtherUid, $('chat-title').textContent); };
+
+/* =====================================================
+   🔑 CODE ADMIN QUOTIDIEN — création de compte
+   Format AAAA000000, aléatoire, change à 0h.
+   Visible uniquement par Anton / Talco dans Réglages.
+   ===================================================== */
+function todayKey(){
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function genAdminCode(){
+  const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let l=''; for(let i=0;i<4;i++) l+=letters[Math.floor(Math.random()*letters.length)];
+  let n=''; for(let i=0;i<6;i++) n+=Math.floor(Math.random()*10);
+  return l+n;
+}
+async function getOrCreateDailyAdminCode(canCreate){
+  const key=todayKey();
+  const ref=db.collection('system').doc('dailyAdminCode');
+  const snap=await ref.get();
+  if(snap.exists && snap.data().date===key) return snap.data().code;
+  if(!canCreate) return null;
+  const code=genAdminCode();
+  await ref.set({date:key, code});
+  return code;
+}
+async function verifyAdminCode(input){
+  if(!input) return false;
+  const ref=db.collection('system').doc('dailyAdminCode');
+  const snap=await ref.get();
+  if(!snap.exists || snap.data().date!==todayKey()) return false;
+  return snap.data().code.toUpperCase()===input.trim().toUpperCase();
+}
+
+/* Afficher le champ code admin uniquement en mode inscription */
+const _origToggle = $('toggle-mode').onclick;
+$('toggle-mode').onclick = () => {
+  _origToggle();
+  $('admincode-field').classList.toggle('hidden', !isReg);
 };
-$('cp-close').onclick=()=>$('contact-profile-modal').classList.add('hidden');
 <\/script>
 </body>
 </html>
@@ -3204,7 +3453,7 @@ function clr(){ document.getElementById("rawInput").value=""; document.getElemen
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>TalcoMap</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM2ZhOWZmIi8+PHN0b3Agb2Zmc2V0PSI1MCUiIHN0b3AtY29sb3I9IiM3YzVjZmYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMGU1YzMiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHJ4PSIxNiIgZmlsbD0iIzA1MDYwOCIvPjxwYXRoIGQ9Ik0zMiA4QzIwIDggMTIgMTcgMTIgMjhjMCAxNiAyMCAyOCAyMCAyOHMyMC0xMiAyMC0yOEM1MiAxNyA0NCA4IDMyIDh6IiBmaWxsPSJ1cmwoI2cpIiBzdHJva2U9IiNmNGY2ZmEiIHN0cm9rZS13aWR0aD0iMS41Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIyNyIgcj0iOCIgZmlsbD0iIzA1MDYwOCIvPjxjaXJjbGUgY3g9IjMyIiBjeT0iMjciIHI9IjQiIGZpbGw9IiNmNGY2ZmEiLz48L3N2Zz4=">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c5cff'/%3E%3Cstop offset='1' stop-color='%23ff5fa8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='7' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='32' r='21' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' stroke-dasharray='9 7'/%3E%3C/svg%3E">
 <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4196,24 +4445,29 @@ const MODULES = [
 const gate = document.getElementById('authGate');
 const appEl = document.getElementById('app');
 const gateError = document.getElementById('gateError');
+
+/* Toggle "œil" mot de passe — délégation, marche pour tout .pw-eye présent (statique ou ajouté dynamiquement) */
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.pw-eye');
+  if(!btn) return;
+  const targetId = btn.dataset.target;
+  const input = targetId ? document.getElementById(targetId) : btn.parentElement.querySelector('input');
+  if(!input) return;
+  const show = input.type==='password';
+  input.type = show?'text':'password';
+  btn.classList.toggle('is-visible', show);
+});
 let currentUser=null;
 
 const GUEST_COOLDOWN_MS = 24*60*60*1000; // 1 fois par 24h
 
 function updateGuestButtonState(){
   const btn=document.getElementById('btnGuest');
-  const note=document.querySelector('.gate-guest-note');
   if(!btn) return;
-  const last=Store.get('talcoitn_guest_last', 0);
-  const remaining = GUEST_COOLDOWN_MS - (Date.now()-last);
-  if(remaining>0){
-    const h=Math.floor(remaining/3600000), m=Math.floor((remaining%3600000)/60000);
-    btn.disabled=true;
-    btn.textContent=`Invité disponible dans ${h}h ${m}min`;
-  } else {
-    btn.disabled=false;
-    btn.textContent='Continuer en invité';
-  }
+  btn.disabled=true;
+  btn.style.opacity='.45';
+  btn.style.cursor='not-allowed';
+  btn.textContent='Mode invité désactivé';
 }
 
 function positionGateTabBg(){
@@ -4246,36 +4500,6 @@ window.addEventListener('resize', positionGateTabBg);
 // projet Firebase, donc un même pseudo doit toujours produire le même
 // e-mail interne des deux côtés pour pointer vers le même compte.
 const uToEmail = u => u.trim().toLowerCase().replace(/[^a-z0-9_.]/g,'')+'@talcoexchange.app';
-
-/* ===== CODE ADMIN QUOTIDIEN (création de compte) =====
-   Un code au format AAAA000000 (4 lettres + 6 chiffres), généré côté client
-   à partir de la date du jour + un sel fixe, donc identique pour tout le
-   monde le même jour sans avoir besoin de stockage serveur. Il change
-   automatiquement chaque nuit à minuit. Il n'est affiché en clair dans les
-   Settings qu'aux comptes dont le pseudo est "Anton" ou "Talco" — les autres
-   doivent se le faire communiquer directement par eux. */
-const ADMIN_CODE_SALT = "TalcoITN-secure-daily-code-v1";
-function dailyAdminCodeSeedString(){
-  const now=new Date();
-  return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}-${ADMIN_CODE_SALT}`;
-}
-function seededHash(str){
-  let h=2166136261;
-  for(let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
-  return h>>>0;
-}
-function getDailyAdminCode(){
-  let h = seededHash(dailyAdminCodeSeedString());
-  const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let code='';
-  for(let i=0;i<4;i++){ code += letters[h%26]; h = Math.floor(h/26) || seededHash(code+dailyAdminCodeSeedString()); }
-  let h2 = seededHash(dailyAdminCodeSeedString()+'#digits');
-  let digits='';
-  for(let i=0;i<6;i++){ digits += (h2%10); h2 = Math.floor(h2/10) || seededHash(digits+dailyAdminCodeSeedString()); }
-  return code+digits;
-}
-// Pseudos autorisés à voir le code admin du jour dans les Settings.
-const ADMIN_CODE_VISIBLE_TO = ["anton","talco"];
 
 // Traduction des codes d'erreur Firebase les plus fréquents
 function fbErrorMessage(err){
@@ -4312,10 +4536,7 @@ document.getElementById('btnLogin').addEventListener('click', ()=>{
 document.getElementById('btnSignup').addEventListener('click', ()=>{
   const pseudo=document.getElementById('signupName').value.trim();
   const pass=document.getElementById('signupPass').value;
-  const adminCode=document.getElementById('signupAdminCode').value.trim().toUpperCase();
   if(!pseudo||pass.length<6){ gateError.textContent="Pseudo et mot de passe (6 car. min.) requis."; return; }
-  if(!adminCode){ gateError.textContent="Le code admin du jour est requis pour créer un compte."; return; }
-  if(adminCode!==getDailyAdminCode()){ gateError.textContent="Code admin invalide ou expiré — demandez le code du jour à un administrateur."; return; }
   const email=uToEmail(pseudo);
   if(fbReady){
     firebase.auth().createUserWithEmailAndPassword(email,pass)
@@ -4345,16 +4566,7 @@ console.log(fbReady
 const ADMIN_EMAILS = ["talco@talcoexchange.app"];
 
 document.getElementById('btnGuest').addEventListener('click', ()=>{
-  const last=Store.get('talcoitn_guest_last', 0);
-  const remaining = GUEST_COOLDOWN_MS - (Date.now()-last);
-  if(remaining>0){
-    const h=Math.floor(remaining/3600000), m=Math.floor((remaining%3600000)/60000);
-    gateError.textContent=`Mode invité déjà utilisé — réessayez dans ${h}h ${m}min.`;
-    updateGuestButtonState();
-    return;
-  }
-  Store.set('talcoitn_guest_last', Date.now());
-  enterApp({name:'Invité', email:null, guest:true});
+  gateError.textContent='Mode invité désactivé pour des raisons de sécurité.';
 });
 
 function enterApp(user){
@@ -5212,18 +5424,18 @@ function renderSettings(){
       <div class="set-row"><span>Utilisateur actif</span><span id="setUserLabel"></span></div>
       <div class="set-row"><span>Se déconnecter</span><button class="set-btn danger" id="setLogout">Déconnexion</button></div>
     </div>
-    ${currentUser && !currentUser.guest && ADMIN_CODE_VISIBLE_TO.includes((currentUser.name||'').toLowerCase()) ? `
-    <div class="set-section glass">
-      <div class="set-title">🔑 Code admin du jour</div>
-      <div class="set-row"><span>Code pour créer un compte</span><span style="font-family:var(--font-m,monospace);font-weight:800;letter-spacing:.06em;font-size:.85rem;">${getDailyAdminCode()}</span></div>
-      <div class="set-row" style="font-size:.65rem;color:var(--text-2);line-height:1.5;">Ce code change automatiquement chaque jour à minuit. Visible uniquement par Anton et Talco — communiquez-le vous-même aux personnes qui doivent créer un compte.</div>
-    </div>` : ''}
     ${currentUser && currentUser.isAdmin ? `
     <div class="set-section glass">
       <div class="set-title">👑 Comptes (admin)</div>
       <div class="set-row" style="flex-wrap:wrap;gap:.5rem;">
         <input type="text" id="admNewPseudo" placeholder="Pseudo du nouveau compte" style="background:rgba(0,0,0,.3);border:1px solid var(--stroke);color:var(--text-0);border-radius:10px;padding:.4rem .7rem;font-size:.75rem;flex:1;min-width:140px;">
-        <input type="password" id="admNewPass" placeholder="Mot de passe (6 car. min.)" style="background:rgba(0,0,0,.3);border:1px solid var(--stroke);color:var(--text-0);border-radius:10px;padding:.4rem .7rem;font-size:.75rem;flex:1;min-width:140px;">
+        <div class="pw-wrap" style="flex:1;min-width:140px;">
+          <input type="password" id="admNewPass" placeholder="Mot de passe (6 car. min.)" style="background:rgba(0,0,0,.3);border:1px solid var(--stroke);color:var(--text-0);border-radius:10px;padding:.4rem .7rem;font-size:.75rem;width:100%;">
+          <button type="button" class="pw-eye" data-target="admNewPass" style="right:2px;width:26px;height:26px;">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
         <button class="set-btn" id="admCreateBtn">+ Ajouter à distance</button>
       </div>
       <div class="set-row"><span>Rechercher</span><input type="text" id="admSearch" placeholder="Filtrer par pseudo…" style="background:rgba(0,0,0,.3);border:1px solid var(--stroke);color:var(--text-0);border-radius:10px;padding:.4rem .7rem;font-size:.75rem;min-width:180px;"></div>
